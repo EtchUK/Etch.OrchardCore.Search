@@ -1,0 +1,62 @@
+{
+  "name": "Etch.OrchardCore.Search",
+  "displayName": "Site Search",
+  "description": "Provides site search.",
+  "author": "Etch",
+  "website": "https://etchuk.com",
+  "version": "0.1.0",
+  "issetuprecipe": false,
+  "categories": ["search"],
+  "tags": ["search"],
+  "steps": [
+    {
+      "name": "ContentDefinition",
+      "ContentTypes": [
+        {
+          "Name": "SiteSearch",
+          "DisplayName": "Site Search",
+          "Settings": {
+            "Creatable": "True",
+            "Draftable": "True",
+            "Versionable": "True",
+            "Listable": "True",
+            "Securable": "True",
+            "Stereotype": null
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "SiteSearch",
+              "Name": "SiteSearch",
+              "Settings": {
+                "Position": "2"
+              }
+            },
+            {
+              "PartName": "AutoroutePart",
+              "Name": "AutoroutePart",
+              "Settings": {
+                "DisplayName": null,
+                "Description": null,
+                "Editor": null,
+                "Pattern": "{{ ContentItem | display_text | slugify }}",
+                "AllowCustomPath": "True",
+                "AllowUpdatePath": "True",
+                "ShowHomepageOption": "False",
+                "ContentIndexSettings": {},
+                "Position": "1"
+              }
+            },
+            {
+              "PartName": "TitlePart",
+              "Name": "TitlePart",
+              "Settings": {
+                "Position": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "ContentParts": []
+    }
+  ]
+}
