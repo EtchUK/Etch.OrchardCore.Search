@@ -1,4 +1,8 @@
-﻿<section class="section">
+﻿@model Etch.OrchardCore.Search.ViewModels.SiteSearchViewModel
+
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+
+<section class="section">
     <div class="section__content">
         <form class="form form--centered" method="get">
             <div class="field-group field-group--horizontal">
@@ -13,3 +17,31 @@
         </form>
     </div>
 </section>
+
+@if (Model.IsSearching)
+{
+    <section class="section">
+        <div class="section__content">
+            <h2>@T["Search Results"]</h2>
+
+            @if (Model.HasResults)
+            {
+                <ul class="list list--search-results">
+                    @foreach (var contentItem in Model.Results)
+                    {
+                        var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(contentItem, null, Model.DisplayType);
+
+                        <li class="list__item">
+                            @await DisplayAsync(contentItemSummary)
+                        </li>
+                    }
+                </ul>
+
+                @await DisplayAsync(Model.PagerShape)
+            } else
+            {
+                <p>@T["Unable to find anything that matches your search."]</p>
+            }
+        </div>
+    </section>
+}

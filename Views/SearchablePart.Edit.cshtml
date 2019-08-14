@@ -1,0 +1,18 @@
+﻿@using Etch.OrchardCore.Search.ViewModels
+
+@model SearchablePartEditViewModel
+
+<fieldset class="form-group">
+    <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" asp-for="ExcludeFromResults" checked="@Model.ExcludeFromResults" />
+        <label class="custom-control-label" asp-for="ExcludeFromResults">@T["Exclude from site search"]</label>
+        <span class="hint">— @T["Check to exclude this content item from appearing within the site search results."]</span>
+    </div>
+</fieldset>
+
+<fieldset class="form-group" asp-validation-class-for="Keywords">
+    <label asp-for="Keywords">@T["Keywords"]</label>
+    <textarea asp-for="Keywords" class="form-control" maxlength="500"></textarea>
+    <span asp-validation-for="Keywords"></span>
+    <span class="hint">@T["Keywords used to match against search term to determine whether content is included in results."]</span>
+</fieldset>

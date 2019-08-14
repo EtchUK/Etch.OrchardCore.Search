@@ -1,3 +1,17 @@
 ﻿@model Etch.OrchardCore.Search.ViewModels.SiteSearchEditViewModel
 
-<p>Site search...</p>
+<fieldset class="form-group" asp-validation-class-for="DisplayType">
+    <label asp-for="DisplayType">@T["Display Type"]</label>
+    <input asp-for="DisplayType" class="form-control content-preview-text content-caption-text" />
+    <span asp-validation-for="DisplayType"></span>
+    <span class="hint">@T["Display type to use when rendering items within search results."]</span>
+</fieldset>
+
+<h3>Search Results Settings</h3>
+
+<fieldset class="form-group" asp-validation-class-for="PageSize">
+    <label asp-for="PageSize">@T["Page Size"]</label>
+    <input asp-for="PageSize" class="form-control content-preview-text content-caption-text" />
+    <span asp-validation-for="PageSize"></span>
+    <span class="hint">@T["Number of items to display within search results."]</span>
+</fieldset>

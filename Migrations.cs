@@ -1,4 +1,5 @@
-﻿using OrchardCore.ContentManagement.Metadata;
+﻿using Etch.OrchardCore.Search.Indexes;
+using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Recipes.Services;
@@ -30,16 +31,27 @@ namespace Etch.OrchardCore.Search
         public async Task<int> CreateAsync()
         {
             _contentDefinitionManager.AlterPartDefinition("SiteSearch", part => part
-                .WithDescription("Adds site search to page")
+                .WithDescription("Adds site search to page.")
                 .WithDisplayName("Site Search"));
-
-            #region Run Recipe
 
             await _recipeMigrator.ExecuteAsync("create.recipe.json", this);
 
-            #endregion Run Recipe
+            _contentDefinitionManager.AlterPartDefinition("SearchablePart", part => part
+                .Attachable()
+                .WithDescription("Makes content type included within site search.")
+                .WithDisplayName("Searchable"));
 
             return 1;
+        }
+
+        public int UpdateFrom1()
+        {
+            SchemaBuilder.CreateMapIndexTable(nameof(SearchableIndex), table => table
+                .Column<string>(nameof(SearchableIndex.DisplayText), c => c.WithLength(500))
+                .Column<string>(nameof(SearchableIndex.Keywords), c => c.WithLength(500))
+            );
+
+            return 2;
         }
 
         #endregion

@@ -1,10 +1,12 @@
 ﻿using Etch.OrchardCore.Search.Drivers;
+using Etch.OrchardCore.Search.Indexes;
 using Etch.OrchardCore.Search.Models;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
+using YesSql.Indexes;
 
 namespace Etch.OrchardCore.Search
 {
@@ -18,8 +20,12 @@ namespace Etch.OrchardCore.Search
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ContentPart, SiteSearch>();
+            services.AddSingleton<ContentPart, SearchablePart>();
 
             services.AddScoped<IContentPartDisplayDriver, SiteSearchPartDisplay>();
+            services.AddScoped<IContentPartDisplayDriver, SearchablePartDisplay>();
+
+            services.AddSingleton<IIndexProvider, SearchableIndexProvider>();
 
             services.AddScoped<IDataMigration, Migrations>();
         }
