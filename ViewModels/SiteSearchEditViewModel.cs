@@ -1,4 +1,5 @@
-﻿using OrchardCore.ContentTypes.ViewModels;
+﻿using Etch.OrchardCore.Search.Settings;
+using OrchardCore.ContentTypes.ViewModels;
 
 namespace Etch.OrchardCore.Search.ViewModels
 {
@@ -6,10 +7,12 @@ namespace Etch.OrchardCore.Search.ViewModels
     {
         public string[] ContentTypes { get; set; }
 
-        public string DisplayType { get; set; }
+        public SiteSearchDisplayType DisplayType { get; set; }
+
+        public string ItemsDisplayType { get; set; }
 
         public int PageSize { get; set; }
-        
+
         public ContentTypeSelection[] SearchableContentTypes { get; set; }
     }
 }

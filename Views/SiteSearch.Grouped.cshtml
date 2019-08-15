@@ -1,0 +1,51 @@
+﻿@model Etch.OrchardCore.Search.ViewModels.SiteSearchGroupedViewModel
+
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+
+<section class="section">
+    <div class="section__content">
+        <form class="form form--centered" method="get">
+            <div class="field-group field-group--horizontal">
+                <div class="field">
+                    <input id="filter" name="filter" type="text" value="@Model.Filter" placeholder="@T["Enter search term..."]" class="form-control">
+                </div>
+
+                <div class="field">
+                    <button type="submit" class="btn btn--primary">@T["Search"]</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@if (Model.IsSearching)
+{
+    <section class="section">
+        <div class="section__content">
+            <h2>@T["Search Results"]</h2>
+
+            @foreach (var resultGroup in Model.Results)
+            {
+                <h3>@resultGroup.ContentType</h3>
+
+                @if (resultGroup.HasResults)
+                {
+                    <ul class="list list--search-results">
+                        @foreach (var contentItem in resultGroup.Items)
+                        {
+                            var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(contentItem, null, Model.ItemsDisplayType);
+
+                            <li class="list__item">
+                                @await DisplayAsync(contentItemSummary)
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>@T["Unable to find anything that matches your search."]</p>
+                }
+            }
+        </div>
+    </section>
+}

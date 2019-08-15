@@ -1,4 +1,4 @@
-﻿@model Etch.OrchardCore.Search.ViewModels.SiteSearchViewModel
+﻿@model Etch.OrchardCore.Search.ViewModels.SiteSearchListViewModel
 
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 
@@ -29,7 +29,7 @@
                 <ul class="list list--search-results">
                     @foreach (var contentItem in Model.Results)
                     {
-                        var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(contentItem, null, Model.DisplayType);
+                        var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(contentItem, null, Model.ItemsDisplayType);
 
                         <li class="list__item">
                             @await DisplayAsync(contentItemSummary)

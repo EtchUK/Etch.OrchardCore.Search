@@ -8,6 +8,7 @@ using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentManagement.Records;
 using OrchardCore.ContentTypes.ViewModels;
 using OrchardCore.DisplayManagement.ModelBinding;
@@ -27,7 +28,7 @@ namespace Etch.OrchardCore.Search.Drivers
         #region Constants
 
         private const string FilterQueryStringParameter = "filter";
-        private const string DefaultDisplayType = "Summary";
+        private const string DefaultItemsDisplayType = "Summary";
         private const int DefaultPageSize = 2;
 
         #endregion
@@ -55,7 +56,117 @@ namespace Etch.OrchardCore.Search.Drivers
 
         public override async Task<IDisplayResult> DisplayAsync(SiteSearch part, BuildPartDisplayContext context)
         {
-           var request = _httpContextAccessor.HttpContext.Request;
+            if (part.DisplayType == Settings.SiteSearchDisplayType.Grouped)
+            {
+                return await GroupedAsync(part, context);
+            }
+
+            return await ListAsync(part, context);
+        }
+
+        public override IDisplayResult Edit(SiteSearch part, BuildPartEditorContext context)
+        {
+            return Initialize<SiteSearchEditViewModel>("SiteSearch_Edit", m =>
+            {
+                m.ContentTypes = part.ContentTypes;
+                m.DisplayType = part.DisplayType;
+                m.ItemsDisplayType = part.ItemsDisplayType;
+                m.PageSize = part.PageSize;
+                m.SearchableContentTypes = GetSearchableContentTypes()
+                    .Select(x => new ContentTypeSelection
+                    {
+                        ContentTypeDefinition = x,
+                        IsSelected = part.ContentTypes.Contains(x.Name)
+                    })
+                    .OrderBy(x => x.ContentTypeDefinition.DisplayName)
+                    .ToArray();
+            });
+        }
+
+        public async override Task<IDisplayResult> UpdateAsync(SiteSearch part, IUpdateModel updater)
+        {
+            var model = new SiteSearchEditViewModel();
+
+            if (await updater.TryUpdateModelAsync(model, Prefix))
+            {
+                part.DisplayType = model.DisplayType;
+                part.ItemsDisplayType = string.IsNullOrWhiteSpace(model.ItemsDisplayType) ? DefaultItemsDisplayType : model.ItemsDisplayType;
+                part.PageSize = model.PageSize;
+                part.ContentTypes = model.ContentTypes;
+            }
+
+            return Edit(part);
+        }
+
+        #endregion
+
+        #region HelperMethods
+
+        private async Task<dynamic> CreatePager(BuildPartDisplayContext context, Pager pager, string term, int totalItems)
+        {
+            var routeData = new RouteData();
+
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                routeData.Values.Add(FilterQueryStringParameter, term);
+            }
+
+            return (await context.New.Pager(pager)).TotalItemCount(totalItems).RouteData(routeData);
+        }
+
+        private IList<ContentTypeDefinition> GetSearchableContentTypes()
+        {
+            return _contentDefinitionManager
+                .ListTypeDefinitions()
+                .Where(x => x.Parts.Any(p => p.Name == typeof(SearchablePart).Name))
+                .ToList();
+        }
+
+        private async Task<IDisplayResult> GroupedAsync(SiteSearch part, BuildPartDisplayContext context)
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
+            var term = request.GetQueryString(FilterQueryStringParameter);
+            var results = new List<SiteSearchGroupedResultsGroup>();
+
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                var searchableTypes = GetSearchableContentTypes();
+                var types = part.ContentTypes.Any() ? searchableTypes.Where(x => part.ContentTypes.Contains(x.Name)).ToList() : searchableTypes;
+
+                foreach (var type in types)
+                {
+                    var query = _session.Query<ContentItem>()
+                        .With<SearchableIndex>(x =>
+                            x.Keywords.Contains(term) || x.DisplayText.Contains(term)
+                        )
+                        .With<ContentItemIndex>(x =>
+                            x.Published && x.Latest && x.ContentType == type.Name
+                        )
+                        .OrderBy(x => x.DisplayText);
+
+
+                    results.Add(new SiteSearchGroupedResultsGroup {
+                        ContentType = type.DisplayName,
+                        Items = (await query
+                            .Take(part.PageSize)
+                            .ListAsync())
+                            .ToList()
+                    });
+                }
+            }
+
+            return Initialize<SiteSearchGroupedViewModel>("SiteSearch_Grouped", model =>
+            {
+                model.Filter = term;
+                model.ItemsDisplayType = part.ItemsDisplayType;
+                model.Results = results;
+            })
+            .Location("Detail", "Content:5");
+        }
+
+        private async Task<IDisplayResult> ListAsync(SiteSearch part, BuildPartDisplayContext context)
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
             var term = request.GetQueryString(FilterQueryStringParameter);
             var pager = new Pager(request.GetPagerParameters(part.PageSize), part.PageSize);
 
@@ -92,64 +203,14 @@ namespace Etch.OrchardCore.Search.Drivers
 
             dynamic pagerShape = await CreatePager(context, pager, term, totalItems);
 
-            return Initialize<SiteSearchViewModel>("SiteSearch", model =>
+            return Initialize<SiteSearchListViewModel>("SiteSearch_List", model =>
             {
-                model.DisplayType = part.DisplayType;
                 model.Filter = term;
+                model.ItemsDisplayType = part.ItemsDisplayType;
                 model.PagerShape = pagerShape;
                 model.Results = items;
             })
             .Location("Detail", "Content:5");
-        }
-
-        public override IDisplayResult Edit(SiteSearch part, BuildPartEditorContext context)
-        {
-            var searchableTypes = _contentDefinitionManager.ListTypeDefinitions().Where(x => x.Parts.Any(p => p.Name == typeof(SearchablePart).Name)).ToList();
-
-            return Initialize<SiteSearchEditViewModel>("SiteSearch_Edit", m =>
-            {
-                m.ContentTypes = part.ContentTypes;
-                m.DisplayType = part.DisplayType;
-                m.PageSize = part.PageSize;
-                m.SearchableContentTypes = searchableTypes
-                    .Select(x => new ContentTypeSelection
-                    {
-                        ContentTypeDefinition = x,
-                        IsSelected = part.ContentTypes.Contains(x.Name)
-                    })
-                    .OrderBy(x => x.ContentTypeDefinition.DisplayName)
-                    .ToArray();
-            });
-        }
-
-        public async override Task<IDisplayResult> UpdateAsync(SiteSearch part, IUpdateModel updater)
-        {
-            var model = new SiteSearchEditViewModel();
-
-            if (await updater.TryUpdateModelAsync(model, Prefix))
-            {
-                part.DisplayType = string.IsNullOrWhiteSpace(model.DisplayType) ? DefaultDisplayType : model.DisplayType;
-                part.PageSize = model.PageSize;
-                part.ContentTypes = model.ContentTypes;
-            }
-
-            return Edit(part);
-        }
-
-        #endregion
-
-        #region HelperMethods
-
-        private async Task<dynamic> CreatePager(BuildPartDisplayContext context, Pager pager, string term, int totalItems)
-        {
-            var routeData = new RouteData();
-
-            if (!string.IsNullOrWhiteSpace(term))
-            {
-                routeData.Values.Add(FilterQueryStringParameter, term);
-            }
-
-            return (await context.New.Pager(pager)).TotalItemCount(totalItems).RouteData(routeData);
         }
 
         #endregion

@@ -1,13 +1,26 @@
-﻿@model Etch.OrchardCore.Search.ViewModels.SiteSearchEditViewModel
+﻿@using Etch.OrchardCore.Search.Settings
+
+@model Etch.OrchardCore.Search.ViewModels.SiteSearchEditViewModel
+
+<h5>Search Results Settings</h5>
 
 <fieldset class="form-group" asp-validation-class-for="DisplayType">
     <label asp-for="DisplayType">@T["Display Type"]</label>
-    <input asp-for="DisplayType" class="form-control content-preview-text content-caption-text" />
+    <select asp-for="DisplayType" class="form-control content-preview-text content-caption-text">
+        <option value="@SiteSearchDisplayType.Grouped">@T["Grouped - Results are grouped by content type"]</option>
+        <option value="@SiteSearchDisplayType.List">@T["List - Results are displayed together in a list"]</option>
+    </select>
     <span asp-validation-for="DisplayType"></span>
-    <span class="hint">@T["Display type to use when rendering items within search results."]</span>
+    <span class="hint">@T["Define how search results are displayed."]</span>
 </fieldset>
 
-<h5>Search Results Settings</h5>
+
+<fieldset class="form-group" asp-validation-class-for="ItemsDisplayType">
+    <label asp-for="ItemsDisplayType">@T["Items Display Type"]</label>
+    <input asp-for="ItemsDisplayType" class="form-control content-preview-text content-caption-text" />
+    <span asp-validation-for="ItemsDisplayType"></span>
+    <span class="hint">@T["Display type to use when rendering items within search results."]</span>
+</fieldset>
 
 <fieldset class="form-group">
     <label asp-for="ContentTypes">@T["Content Types"]</label>
