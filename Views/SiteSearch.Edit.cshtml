@@ -7,7 +7,26 @@
     <span class="hint">@T["Display type to use when rendering items within search results."]</span>
 </fieldset>
 
-<h3>Search Results Settings</h3>
+<h5>Search Results Settings</h5>
+
+<fieldset class="form-group">
+    <label asp-for="ContentTypes">@T["Content Types"]</label>
+    <span class="hint">— @T["The content types that should be included in the search results."]</span>
+    <div class="row">
+        @for (var i = 0; i < Model.SearchableContentTypes.Length; i++)
+        {
+            var contentType = Model.SearchableContentTypes[i];
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="@Html.IdFor(m => m.SearchableContentTypes[i])" name="@Html.NameFor(m => m.ContentTypes)" checked="@contentType.IsSelected" value="@contentType.ContentTypeDefinition.Name">
+                    <label class="custom-control-label" for="@Html.IdFor(m => m.SearchableContentTypes[i])">@contentType.ContentTypeDefinition.DisplayName</label>
+                </div>
+            </div>
+        }
+    </div>
+
+    <p class="hint">If none selected, all the content types displayed above will be included in search results.</p>
+</fieldset>
 
 <fieldset class="form-group" asp-validation-class-for="PageSize">
     <label asp-for="PageSize">@T["Page Size"]</label>

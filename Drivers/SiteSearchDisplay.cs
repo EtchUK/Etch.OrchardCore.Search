@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Routing;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
+using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Records;
+using OrchardCore.ContentTypes.ViewModels;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Navigation;
@@ -16,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using YesSql;
+using YesSql.Services;
 
 namespace Etch.OrchardCore.Search.Drivers
 {
@@ -31,6 +34,7 @@ namespace Etch.OrchardCore.Search.Drivers
 
         #region Dependencies
 
+        private readonly IContentDefinitionManager _contentDefinitionManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly YesSql.ISession _session;
 
@@ -38,8 +42,9 @@ namespace Etch.OrchardCore.Search.Drivers
 
         #region Constructor
 
-        public SiteSearchPartDisplay(IHttpContextAccessor httpContextAccessor, YesSql.ISession session)
+        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, YesSql.ISession session)
         {
+            _contentDefinitionManager = contentDefinitionManager;
             _httpContextAccessor = httpContextAccessor;
             _session = session;
         }
@@ -65,8 +70,16 @@ namespace Etch.OrchardCore.Search.Drivers
                     )
                     .With<ContentItemIndex>(x =>
                         x.Published && x.Latest
-                    )
-                    .OrderBy(x => x.DisplayText);
+                    );
+
+                if (part.ContentTypes.Any())
+                {
+                    query = query.With<ContentItemIndex>(x =>
+                        x.ContentType.IsIn(part.ContentTypes)
+                    );
+                }
+
+                query = query.OrderBy(x => x.DisplayText);
 
                 totalItems = await query.CountAsync();
 
@@ -91,10 +104,21 @@ namespace Etch.OrchardCore.Search.Drivers
 
         public override IDisplayResult Edit(SiteSearch part, BuildPartEditorContext context)
         {
+            var searchableTypes = _contentDefinitionManager.ListTypeDefinitions().Where(x => x.Parts.Any(p => p.Name == typeof(SearchablePart).Name)).ToList();
+
             return Initialize<SiteSearchEditViewModel>("SiteSearch_Edit", m =>
             {
+                m.ContentTypes = part.ContentTypes;
                 m.DisplayType = part.DisplayType;
                 m.PageSize = part.PageSize;
+                m.SearchableContentTypes = searchableTypes
+                    .Select(x => new ContentTypeSelection
+                    {
+                        ContentTypeDefinition = x,
+                        IsSelected = part.ContentTypes.Contains(x.Name)
+                    })
+                    .OrderBy(x => x.ContentTypeDefinition.DisplayName)
+                    .ToArray();
             });
         }
 
@@ -106,6 +130,7 @@ namespace Etch.OrchardCore.Search.Drivers
             {
                 part.DisplayType = string.IsNullOrWhiteSpace(model.DisplayType) ? DefaultDisplayType : model.DisplayType;
                 part.PageSize = model.PageSize;
+                part.ContentTypes = model.ContentTypes;
             }
 
             return Edit(part);
