@@ -40,6 +40,11 @@
                             </li>
                         }
                     </ul>
+
+                    @if (resultGroup.Settings.HasViewMoreLinkUrl)
+                    {
+                        <p><a href="@string.Format("{0}/{1}?filter={2}", Context.Request.PathBase, resultGroup.Settings.ViewMoreLinkUrl, Model.Filter)">@resultGroup.Settings.ViewMoreLinkText</a></p>
+                    }
                 }
                 else
                 {

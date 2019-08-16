@@ -29,5 +29,20 @@ namespace Etch.OrchardCore.Search.Models
 
         [JsonProperty("emptyResultsContent")]
         public string EmptyResultsContent { get; set; }
+
+        [JsonProperty("viewMoreLinkText")]
+        public string ViewMoreLinkText { get; set; }
+
+        [JsonProperty("viewMoreLinkUrl")]
+        public string ViewMoreLinkUrl { get; set; }
+
+        [JsonIgnore]
+        public bool HasViewMoreLinkUrl
+        {
+            get
+            {
+                return !string.IsNullOrWhiteSpace(ViewMoreLinkUrl);
+            }
+        }
     }
 }

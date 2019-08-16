@@ -94,7 +94,7 @@ namespace Etch.OrchardCore.Search.Drivers
                 part.DisplayType = model.DisplayType;
                 part.ItemsDisplayType = string.IsNullOrWhiteSpace(model.ItemsDisplayType) ? DefaultItemsDisplayType : model.ItemsDisplayType;
                 part.PageSize = model.PageSize;
-                part.ContentTypeSettings = JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings);
+                part.ContentTypeSettings = CleanSettings(JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings));
             }
 
             return Edit(part);
@@ -103,6 +103,19 @@ namespace Etch.OrchardCore.Search.Drivers
         #endregion
 
         #region HelperMethods
+
+        private SiteSearchContentTypeSettings[] CleanSettings(SiteSearchContentTypeSettings[] settings)
+        {
+            foreach (var setting in settings)
+            {
+                if (!string.IsNullOrEmpty(setting.ViewMoreLinkUrl) && setting.ViewMoreLinkUrl.StartsWith("/"))
+                {
+                    setting.ViewMoreLinkUrl = setting.ViewMoreLinkUrl.Substring(1);
+                }
+            }
+
+            return settings;
+        }
 
         private async Task<dynamic> CreatePager(BuildPartDisplayContext context, Pager pager, string term, int totalItems)
         {

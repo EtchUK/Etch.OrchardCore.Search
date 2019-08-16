@@ -59,6 +59,18 @@
                         <input id="emptyResultsContent" class="form-control content-preview-text content-caption-text" v-model="item.emptyResultsContent" />
                         <span class="hint">@T["Content displayed when no results are found for this content type."]</span>
                     </fieldset>
+
+                    <fieldset class="form-group">
+                        <label for="viewMoreLinkUrl">@T["View More Link URL"]</label>
+                        <input id="viewMoreLinkUrl" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkUrl" />
+                        <span class="hint">@T["Link to view more of this content type. Link will have search term appended via query string. If left blank, no link will be displayed."]</span>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label for="viewMoreLinkText">@T["View More Link Label"]</label>
+                        <input id="viewMoreLinkText" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkText" />
+                        <span class="hint">@T["Label for link to view more for content type."]</span>
+                    </fieldset>
                 </div>
             </div>
         </draggable>
