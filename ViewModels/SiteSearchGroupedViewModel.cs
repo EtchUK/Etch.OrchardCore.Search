@@ -1,4 +1,5 @@
-﻿using OrchardCore.ContentManagement;
+﻿using Etch.OrchardCore.Search.Models;
+using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +15,8 @@ namespace Etch.OrchardCore.Search.ViewModels
         public string ContentType { get; set; }
 
         public IList<ContentItem> Items { get; set; }
+
+        public SiteSearchContentTypeSettings Settings { get; set; }
 
         public bool HasResults
         {

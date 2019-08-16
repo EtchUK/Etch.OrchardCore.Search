@@ -2,6 +2,19 @@
 
 @model Etch.OrchardCore.Search.ViewModels.SiteSearchEditViewModel
 
+<script asp-src="https://vuejs.org/js/vue.min.js" debug-src="https://vuejs.org/js/vue.js" asp-name="vuejs"
+        at="Foot"></script>
+<script asp-src="https://cdn.jsdelivr.net/sortable/1.4.2/Sortable.min.js"
+        debug-src="https://cdn.jsdelivr.net/sortable/1.4.2/Sortable.js" asp-name="sortable" at="Foot"></script>
+<script asp-src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"
+        debug-src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.js" asp-name="vuedraggable"
+        depends-on="vuejs, sortable" at="Foot"></script>
+
+<script asp-src="~/Etch.OrchardCore.Search/Scripts/admin.js" asp-name="searchAdmin" depends-on="jquery" at="Foot"></script>
+<script at="Foot">
+    initializeContentTypesEditor(document.getElementById('@Html.IdFor(m => m)_ContentTypesEditor'));
+</script>
+
 <h5>Search Results Settings</h5>
 
 <fieldset class="form-group" asp-validation-class-for="DisplayType">
@@ -23,22 +36,40 @@
 </fieldset>
 
 <fieldset class="form-group">
-    <label asp-for="ContentTypes">@T["Content Types"]</label>
+    <label>@T["Content Types"]</label>
     <span class="hint">— @T["The content types that should be included in the search results."]</span>
-    <div class="row">
-        @for (var i = 0; i < Model.SearchableContentTypes.Length; i++)
-        {
-            var contentType = Model.SearchableContentTypes[i];
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="@Html.IdFor(m => m.SearchableContentTypes[i])" name="@Html.NameFor(m => m.ContentTypes)" checked="@contentType.IsSelected" value="@contentType.ContentTypeDefinition.Name">
-                    <label class="custom-control-label" for="@Html.IdFor(m => m.SearchableContentTypes[i])">@contentType.ContentTypeDefinition.DisplayName</label>
+
+    <div id="@Html.IdFor(m => m)_ContentTypesEditor" data-for="@Html.IdFor(m => m.ContentTypeSettings)" asp-validation-class-for="ContentTypeSettings">
+        <input type="hidden" asp-for="ContentTypeSettings" :value="value" data-init="@Model.ContentTypeSettings">
+
+        <draggable tag="div" class="list-group" v-model="items" handle=".handle">
+            <div v-for="(item, index) in items" v-bind:key="item.contentType" class="list-group-item list-group-item-action">
+                <div class="w-100 justify-content-between">
+                    <h5 class="mb-2">{{ item.contentType }}</h5>
+
+                    <fieldset class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" :id="'includedInSearch_' + item.contentType" class="custom-control-input" v-model="item.included" />
+                            <label class="custom-control-label" :for="'includedInSearch_' + item.contentType">@T["Include in search results"]</label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label for="emptyResultsContent">@T["Empty Results Content"]</label>
+                        <input id="emptyResultsContent" class="form-control content-preview-text content-caption-text" v-model="item.emptyResultsContent" />
+                        <span class="hint">@T["Content displayed when no results are found for this content type."]</span>
+                    </fieldset>
                 </div>
             </div>
-        }
+        </draggable>
     </div>
+</fieldset>
 
-    <p class="hint">If none selected, all the content types displayed above will be included in search results.</p>
+<fieldset class="form-group" asp-validation-class-for="EmptyResultsContent">
+    <label asp-for="EmptyResultsContent">@T["Empty Results Content"]</label>
+    <input asp-for="EmptyResultsContent" class="form-control content-preview-text content-caption-text" />
+    <span asp-validation-for="EmptyResultsContent"></span>
+    <span class="hint">@T["Content displayed when no results are found."]</span>
 </fieldset>
 
 <fieldset class="form-group" asp-validation-class-for="PageSize">

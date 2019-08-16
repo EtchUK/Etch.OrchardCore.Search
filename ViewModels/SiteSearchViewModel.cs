@@ -2,6 +2,8 @@
 {
     public class SiteSearchViewModel
     {
+        public string EmptyResultsContent { get; set; }
+
         public string Filter { get; set; }
 
         public string ItemsDisplayType { get; set; }

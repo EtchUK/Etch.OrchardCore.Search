@@ -43,7 +43,7 @@
                 }
                 else
                 {
-                    <p>@T["Unable to find anything that matches your search."]</p>
+                    <p>@(string.IsNullOrWhiteSpace(resultGroup.Settings.EmptyResultsContent) ? Model.EmptyResultsContent : resultGroup.Settings.EmptyResultsContent)</p>
                 }
             }
         </div>

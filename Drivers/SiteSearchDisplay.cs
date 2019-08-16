@@ -4,17 +4,16 @@ using Etch.OrchardCore.Search.Models;
 using Etch.OrchardCore.Search.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Newtonsoft.Json;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentManagement.Records;
-using OrchardCore.ContentTypes.ViewModels;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Navigation;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,20 +65,23 @@ namespace Etch.OrchardCore.Search.Drivers
 
         public override IDisplayResult Edit(SiteSearch part, BuildPartEditorContext context)
         {
+            if (part.ContentTypeSettings == null)
+            {
+                part.ContentTypeSettings = GetSearchableContentTypes()
+                    .Select(x => new SiteSearchContentTypeSettings
+                    {
+                        ContentType = x.Name,
+                        Included = true
+                    })
+                    .ToArray();
+            }
+
             return Initialize<SiteSearchEditViewModel>("SiteSearch_Edit", m =>
             {
-                m.ContentTypes = part.ContentTypes;
+                m.ContentTypeSettings = JsonConvert.SerializeObject(part.ContentTypeSettings);
                 m.DisplayType = part.DisplayType;
                 m.ItemsDisplayType = part.ItemsDisplayType;
                 m.PageSize = part.PageSize;
-                m.SearchableContentTypes = GetSearchableContentTypes()
-                    .Select(x => new ContentTypeSelection
-                    {
-                        ContentTypeDefinition = x,
-                        IsSelected = part.ContentTypes.Contains(x.Name)
-                    })
-                    .OrderBy(x => x.ContentTypeDefinition.DisplayName)
-                    .ToArray();
             });
         }
 
@@ -92,7 +94,7 @@ namespace Etch.OrchardCore.Search.Drivers
                 part.DisplayType = model.DisplayType;
                 part.ItemsDisplayType = string.IsNullOrWhiteSpace(model.ItemsDisplayType) ? DefaultItemsDisplayType : model.ItemsDisplayType;
                 part.PageSize = model.PageSize;
-                part.ContentTypes = model.ContentTypes;
+                part.ContentTypeSettings = JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings);
             }
 
             return Edit(part);
@@ -119,6 +121,7 @@ namespace Etch.OrchardCore.Search.Drivers
             return _contentDefinitionManager
                 .ListTypeDefinitions()
                 .Where(x => x.Parts.Any(p => p.Name == typeof(SearchablePart).Name))
+                .OrderBy(x => x.DisplayName)
                 .ToList();
         }
 
@@ -131,7 +134,7 @@ namespace Etch.OrchardCore.Search.Drivers
             if (!string.IsNullOrWhiteSpace(term))
             {
                 var searchableTypes = GetSearchableContentTypes();
-                var types = part.ContentTypes.Any() ? searchableTypes.Where(x => part.ContentTypes.Contains(x.Name)).ToList() : searchableTypes;
+                var types = part.ContentTypeSettings.Where(x => x.Included).ToArray();
 
                 foreach (var type in types)
                 {
@@ -140,23 +143,30 @@ namespace Etch.OrchardCore.Search.Drivers
                             x.Keywords.Contains(term) || x.DisplayText.Contains(term)
                         )
                         .With<ContentItemIndex>(x =>
-                            x.Published && x.Latest && x.ContentType == type.Name
+                            x.Published && x.Latest && x.ContentType == type.ContentType
                         )
                         .OrderBy(x => x.DisplayText);
 
+                    var displayName = searchableTypes.Where(x => x.Name == type.ContentType).SingleOrDefault()?.DisplayName ?? string.Empty;
 
-                    results.Add(new SiteSearchGroupedResultsGroup {
-                        ContentType = type.DisplayName,
-                        Items = (await query
-                            .Take(part.PageSize)
-                            .ListAsync())
-                            .ToList()
-                    });
+                    if (!string.IsNullOrEmpty(displayName))
+                    {
+                        results.Add(new SiteSearchGroupedResultsGroup
+                        {
+                            ContentType = displayName,
+                            Items = (await query
+                                .Take(part.PageSize)
+                                .ListAsync())
+                                .ToList(),
+                            Settings = type
+                        });
+                    }
                 }
             }
 
             return Initialize<SiteSearchGroupedViewModel>("SiteSearch_Grouped", model =>
             {
+                model.EmptyResultsContent = part.EmptyResultsContent;
                 model.Filter = term;
                 model.ItemsDisplayType = part.ItemsDisplayType;
                 model.Results = results;
@@ -166,9 +176,11 @@ namespace Etch.OrchardCore.Search.Drivers
 
         private async Task<IDisplayResult> ListAsync(SiteSearch part, BuildPartDisplayContext context)
         {
+            var contentTypes = part.ContentTypeSettings.Where(x => x.Included).Select(x => x.ContentType).ToList();
+
             var request = _httpContextAccessor.HttpContext.Request;
-            var term = request.GetQueryString(FilterQueryStringParameter);
             var pager = new Pager(request.GetPagerParameters(part.PageSize), part.PageSize);
+            var term = request.GetQueryString(FilterQueryStringParameter);
 
             var totalItems = 0;
             var items = new List<ContentItem>();
@@ -183,10 +195,10 @@ namespace Etch.OrchardCore.Search.Drivers
                         x.Published && x.Latest
                     );
 
-                if (part.ContentTypes.Any())
+                if (part.ContentTypeSettings.Any(x => x.Included))
                 {
                     query = query.With<ContentItemIndex>(x =>
-                        x.ContentType.IsIn(part.ContentTypes)
+                        x.ContentType.IsIn(contentTypes)
                     );
                 }
 
@@ -205,6 +217,7 @@ namespace Etch.OrchardCore.Search.Drivers
 
             return Initialize<SiteSearchListViewModel>("SiteSearch_List", model =>
             {
+                model.EmptyResultsContent = part.EmptyResultsContent;
                 model.Filter = term;
                 model.ItemsDisplayType = part.ItemsDisplayType;
                 model.PagerShape = pagerShape;
