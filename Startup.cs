@@ -1,10 +1,12 @@
 ﻿using Etch.OrchardCore.Search.Drivers;
 using Etch.OrchardCore.Search.Indexes;
+using Etch.OrchardCore.Search.Indexing;
 using Etch.OrchardCore.Search.Models;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.Data.Migration;
+using OrchardCore.Indexing;
 using OrchardCore.Modules;
 using YesSql.Indexes;
 
@@ -26,6 +28,8 @@ namespace Etch.OrchardCore.Search
             services.AddScoped<IContentPartDisplayDriver, SearchablePartDisplay>();
 
             services.AddSingleton<IIndexProvider, SearchableIndexProvider>();
+
+            services.AddScoped<IContentPartIndexHandler, SearchablePartIndexHandler>();
 
             services.AddScoped<IDataMigration, Migrations>();
         }
