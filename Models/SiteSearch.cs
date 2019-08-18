@@ -27,13 +27,13 @@ namespace Etch.OrchardCore.Search.Models
         public string ContentType { get; set; }
 
         [JsonProperty("included")]
-        public bool Included { get; set; }
+        public bool Included { get; set; } = true;
 
         [JsonProperty("emptyResultsContent")]
         public string EmptyResultsContent { get; set; }
 
         [JsonProperty("query")]
-        public string Query { get; set; }
+        public string Query { get; set; } = string.Empty;
 
         [JsonProperty("viewMoreLinkText")]
         public string ViewMoreLinkText { get; set; }
