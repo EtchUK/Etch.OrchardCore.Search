@@ -1,5 +1,6 @@
 ﻿using Etch.OrchardCore.Search.Extensions;
 using Etch.OrchardCore.Search.Models;
+using Etch.OrchardCore.Search.Shapes;
 using Etch.OrchardCore.Search.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -123,7 +124,7 @@ namespace Etch.OrchardCore.Search.Drivers
             return settings;
         }
 
-        private async Task<dynamic> CreatePager(BuildPartDisplayContext context, Pager pager, string term, int totalItems)
+        private async Task<dynamic> CreatePager(BuildPartDisplayContext context, Pager pager, string term, bool hasMoreResults)
         {
             var routeData = new RouteData();
 
@@ -132,7 +133,11 @@ namespace Etch.OrchardCore.Search.Drivers
                 routeData.Values.Add(FilterQueryStringParameter, term);
             }
 
-            return (await context.New.Pager(pager)).TotalItemCount(totalItems).RouteData(routeData);
+            return (await context.New.PagerSearch(new PagerSearchParameters
+            {
+                CurrentPage = pager.Page,
+                HasMoreResults = hasMoreResults
+            })).RouteData(routeData);
         }
 
         private IList<ContentTypeDefinition> GetSearchableContentTypes()
@@ -194,8 +199,6 @@ namespace Etch.OrchardCore.Search.Drivers
             var request = _httpContextAccessor.HttpContext.Request;
             var pager = new Pager(request.GetPagerParameters(part.PageSize), part.PageSize);
             var term = request.GetQueryString(FilterQueryStringParameter);
-
-            var totalItems = 0;
             var items = new ContentItem[] { };
 
             if (!string.IsNullOrWhiteSpace(term))
@@ -204,21 +207,22 @@ namespace Etch.OrchardCore.Search.Drivers
                 var parameters = new Dictionary<string, object>
                     {
                         { "filter", term },
-                        { "size", part.PageSize }
+                        { "from", pager.GetStartIndex() },
+                        { "size", pager.PageSize + 1 }
                     };
 
                 items = await _queryManager.ExecuteQueryAsync(query, parameters) as ContentItem[];
             }
 
-            dynamic pagerShape = await CreatePager(context, pager, term, totalItems);
+            dynamic pagerShape = await CreatePager(context, pager, term, items.Length > pager.PageSize);
 
             return Initialize<SiteSearchListViewModel>("SiteSearch_List", model =>
             {
                 model.EmptyResultsContent = part.EmptyResultsContent;
                 model.Filter = term;
                 model.ItemsDisplayType = part.ItemsDisplayType;
-                model.PagerShape = pagerShape;
-                model.Results = items;
+                model.Pager = pagerShape;
+                model.Results = items.Take(pager.PageSize).ToArray();
             })
             .Location("Detail", "Content:5");
         }

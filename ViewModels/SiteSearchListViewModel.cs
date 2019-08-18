@@ -7,7 +7,7 @@ namespace Etch.OrchardCore.Search.ViewModels
     {
         public ContentItem[] Results { get; set; }
 
-        public dynamic PagerShape { get; set; }
+        public dynamic Pager { get; set; }
 
         public bool HasResults
         {
