@@ -14,7 +14,7 @@ namespace Etch.OrchardCore.Search.ViewModels
     {
         public string ContentType { get; set; }
 
-        public IList<ContentItem> Items { get; set; }
+        public ContentItem[] Items { get; set; }
 
         public SiteSearchContentTypeSettings Settings { get; set; }
 

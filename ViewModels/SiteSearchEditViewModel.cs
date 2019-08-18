@@ -1,4 +1,6 @@
 ﻿using Etch.OrchardCore.Search.Settings;
+using OrchardCore.Queries;
+using System.ComponentModel.DataAnnotations;
 
 namespace Etch.OrchardCore.Search.ViewModels
 {
@@ -9,6 +11,11 @@ namespace Etch.OrchardCore.Search.ViewModels
         public SiteSearchDisplayType DisplayType { get; set; }
 
         public string EmptyResultsContent { get; set; }
+
+        [Required]
+        public string Query { get; set; } 
+
+        public Query[] Queries { get; set; }
 
         public string ItemsDisplayType { get; set; }
 

@@ -17,7 +17,9 @@
     <PackageReference Include="OrchardCore.ContentTypes" Version="1.0.0-beta3-71077" />
     <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-beta3-71077" />
     <PackageReference Include="OrchardCore.Indexing.Abstractions" Version="1.0.0-beta3-71077" />
+    <PackageReference Include="OrchardCore.Lucene" Version="1.0.0-beta3-71077" />
     <PackageReference Include="OrchardCore.Navigation" Version="1.0.0-beta3-71077" />
+    <PackageReference Include="OrchardCore.Queries.Abstractions" Version="1.0.0-beta3-71077" />
     <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-beta3-71077" />
     <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71077" />
   </ItemGroup>

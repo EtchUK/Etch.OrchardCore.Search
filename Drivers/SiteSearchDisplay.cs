@@ -1,5 +1,4 @@
 ﻿using Etch.OrchardCore.Search.Extensions;
-using Etch.OrchardCore.Search.Indexes;
 using Etch.OrchardCore.Search.Models;
 using Etch.OrchardCore.Search.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -10,15 +9,13 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
-using OrchardCore.ContentManagement.Records;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Navigation;
+using OrchardCore.Queries;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YesSql;
-using YesSql.Services;
 
 namespace Etch.OrchardCore.Search.Drivers
 {
@@ -36,16 +33,18 @@ namespace Etch.OrchardCore.Search.Drivers
 
         private readonly IContentDefinitionManager _contentDefinitionManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IQueryManager _queryManager;
         private readonly YesSql.ISession _session;
 
         #endregion
 
         #region Constructor
 
-        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, YesSql.ISession session)
+        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, IQueryManager queryManager, YesSql.ISession session)
         {
             _contentDefinitionManager = contentDefinitionManager;
             _httpContextAccessor = httpContextAccessor;
+            _queryManager = queryManager;
             _session = session;
         }
 
@@ -63,7 +62,7 @@ namespace Etch.OrchardCore.Search.Drivers
             return await ListAsync(part, context);
         }
 
-        public override IDisplayResult Edit(SiteSearch part, BuildPartEditorContext context)
+        public override async Task<IDisplayResult> EditAsync(SiteSearch part, BuildPartEditorContext context)
         {
             if (part.ContentTypeSettings == null)
             {
@@ -76,28 +75,35 @@ namespace Etch.OrchardCore.Search.Drivers
                     .ToArray();
             }
 
+            var queries = (await _queryManager.ListQueriesAsync()).ToArray();
+
             return Initialize<SiteSearchEditViewModel>("SiteSearch_Edit", m =>
             {
                 m.ContentTypeSettings = JsonConvert.SerializeObject(part.ContentTypeSettings);
                 m.DisplayType = part.DisplayType;
+                m.EmptyResultsContent = part.EmptyResultsContent;
                 m.ItemsDisplayType = part.ItemsDisplayType;
                 m.PageSize = part.PageSize;
+                m.Query = part.Query;
+                m.Queries = queries;
             });
         }
 
-        public async override Task<IDisplayResult> UpdateAsync(SiteSearch part, IUpdateModel updater)
+        public async override Task<IDisplayResult> UpdateAsync(SiteSearch part, IUpdateModel updater, UpdatePartEditorContext context)
         {
             var model = new SiteSearchEditViewModel();
 
             if (await updater.TryUpdateModelAsync(model, Prefix))
             {
+                part.ContentTypeSettings = CleanSettings(JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings));
                 part.DisplayType = model.DisplayType;
+                part.EmptyResultsContent = model.EmptyResultsContent;
                 part.ItemsDisplayType = string.IsNullOrWhiteSpace(model.ItemsDisplayType) ? DefaultItemsDisplayType : model.ItemsDisplayType;
                 part.PageSize = model.PageSize;
-                part.ContentTypeSettings = CleanSettings(JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings));
+                part.Query = model.Query;
             }
 
-            return Edit(part);
+            return await EditAsync(part, context);
         }
 
         #endregion
@@ -148,18 +154,15 @@ namespace Etch.OrchardCore.Search.Drivers
             {
                 var searchableTypes = GetSearchableContentTypes();
                 var types = part.ContentTypeSettings.Where(x => x.Included).ToArray();
+                var parameters = new Dictionary<string, object>
+                    {
+                        { "filter", term },
+                        { "size", part.PageSize }
+                    };
 
                 foreach (var type in types)
                 {
-                    var query = _session.Query<ContentItem>()
-                        .With<SearchableIndex>(x =>
-                            x.Keywords.Contains(term) || x.DisplayText.Contains(term)
-                        )
-                        .With<ContentItemIndex>(x =>
-                            x.Published && x.Latest && x.ContentType == type.ContentType
-                        )
-                        .OrderBy(x => x.DisplayText);
-
+                    var query = await _queryManager.GetQueryAsync(type.Query);
                     var displayName = searchableTypes.Where(x => x.Name == type.ContentType).SingleOrDefault()?.DisplayName ?? string.Empty;
 
                     if (!string.IsNullOrEmpty(displayName))
@@ -167,10 +170,7 @@ namespace Etch.OrchardCore.Search.Drivers
                         results.Add(new SiteSearchGroupedResultsGroup
                         {
                             ContentType = displayName,
-                            Items = (await query
-                                .Take(part.PageSize)
-                                .ListAsync())
-                                .ToList(),
+                            Items = await _queryManager.ExecuteQueryAsync(query, parameters) as ContentItem[],
                             Settings = type
                         });
                     }
@@ -196,34 +196,18 @@ namespace Etch.OrchardCore.Search.Drivers
             var term = request.GetQueryString(FilterQueryStringParameter);
 
             var totalItems = 0;
-            var items = new List<ContentItem>();
+            var items = new ContentItem[] { };
 
             if (!string.IsNullOrWhiteSpace(term))
             {
-                var query = _session.Query<ContentItem>()
-                    .With<SearchableIndex>(x =>
-                        x.Keywords.Contains(term) || x.DisplayText.Contains(term)
-                    )
-                    .With<ContentItemIndex>(x =>
-                        x.Published && x.Latest
-                    );
+                var query = await _queryManager.GetQueryAsync(part.Query);
+                var parameters = new Dictionary<string, object>
+                    {
+                        { "filter", term },
+                        { "size", part.PageSize }
+                    };
 
-                if (part.ContentTypeSettings.Any(x => x.Included))
-                {
-                    query = query.With<ContentItemIndex>(x =>
-                        x.ContentType.IsIn(contentTypes)
-                    );
-                }
-
-                query = query.OrderBy(x => x.DisplayText);
-
-                totalItems = await query.CountAsync();
-
-                items = (await query
-                    .Skip((pager.Page - 1) * pager.PageSize)
-                    .Take(pager.PageSize)
-                    .ListAsync())
-                    .ToList();
+                items = await _queryManager.ExecuteQueryAsync(query, parameters) as ContentItem[];
             }
 
             dynamic pagerShape = await CreatePager(context, pager, term, totalItems);

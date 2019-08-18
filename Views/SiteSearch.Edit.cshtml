@@ -49,7 +49,8 @@
 
 </script>
 
-<h5>Search Results Settings</h5>
+
+<h5>Search Settings</h5>
 
 <fieldset class="form-group" asp-validation-class-for="DisplayType">
     <label asp-for="DisplayType">@T["Display Type"]</label>
@@ -61,6 +62,33 @@
     <span class="hint">@T["Define how search results are displayed."]</span>
 </fieldset>
 
+<fieldset class="form-group list-only" asp-validation-class-for="Query">
+    <label asp-for="Query">@T["Query"]</label>
+
+    @if (Model.Queries.Any())
+    {
+        <select asp-for="Query" class="form-control content-preview-text content-caption-text">
+            <option value="">- Please select query -</option>
+            @foreach (var query in Model.Queries)
+            {
+                <option value="@query.Name" selected="@(query.Name == Model.Query ? "selected" : "")">@query.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Query"></span>
+        <span class="hint">@T["Choose which query should be used for search."]</span>
+    }
+    else
+    {
+        <p class="alert alert-warning"><a asp-action="Index" asp-controller="Admin" asp-route-area="OrchardCore.Queries">@T["Please create a query that can be used for search."]</a></p>
+    }
+</fieldset>
+
+<fieldset class="form-group" asp-validation-class-for="PageSize">
+    <label asp-for="PageSize">@T["Page Size"]</label>
+    <input asp-for="PageSize" class="form-control content-preview-text content-caption-text" />
+    <span asp-validation-for="PageSize"></span>
+    <span class="hint">@T["Number of items to display within search results."]</span>
+</fieldset>
 
 <fieldset class="form-group" asp-validation-class-for="ItemsDisplayType">
     <label asp-for="ItemsDisplayType">@T["Items Display Type"]</label>
@@ -69,7 +97,7 @@
     <span class="hint">@T["Display type to use when rendering items within search results."]</span>
 </fieldset>
 
-<fieldset class="form-group">
+<fieldset class="form-group grouped-only">
     <label>@T["Content Types"]</label>
     <span class="hint">— @T["The content types that should be included in the search results."]</span>
 
@@ -88,19 +116,39 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="form-group grouped-only">
+                    <fieldset class="form-group" asp-validation-class-for="Query">
+                        <label asp-for="Query">@T["Query"]</label>
+
+                        @if (Model.Queries.Any())
+                        {
+                            <select class="form-control content-preview-text content-caption-text" v-model="item.query">
+                                <option value="">- Please select query -</option>
+                                @foreach (var query in Model.Queries)
+                                {
+                                    <option value="@query.Name">@query.Name</option>
+                                }
+                            </select>
+                            <span class="hint">@T["Choose which query should be used for search."]</span>
+                        }
+                        else
+                        {
+                            <p class="alert alert-warning"><a asp-action="Index" asp-controller="Admin" asp-route-area="OrchardCore.Queries">@T["Please create a query that can be used for search."]</a></p>
+                        }
+                    </fieldset>
+
+                    <fieldset class="form-group">
                         <label for="emptyResultsContent">@T["Empty Results Content"]</label>
                         <input id="emptyResultsContent" class="form-control content-preview-text content-caption-text" v-model="item.emptyResultsContent" />
                         <span class="hint">@T["Content displayed when no results are found for this content type."]</span>
                     </fieldset>
 
-                    <fieldset class="form-group grouped-only">
+                    <fieldset class="form-group">
                         <label for="viewMoreLinkUrl">@T["View More Link URL"]</label>
                         <input id="viewMoreLinkUrl" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkUrl" />
                         <span class="hint">@T["Link to view more of this content type. Link will have search term appended via query string. If left blank, no link will be displayed."]</span>
                     </fieldset>
 
-                    <fieldset class="form-group grouped-only">
+                    <fieldset class="form-group">
                         <label for="viewMoreLinkText">@T["View More Link Label"]</label>
                         <input id="viewMoreLinkText" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkText" />
                         <span class="hint">@T["Label for link to view more for content type."]</span>
@@ -116,11 +164,4 @@
     <input asp-for="EmptyResultsContent" class="form-control content-preview-text content-caption-text" />
     <span asp-validation-for="EmptyResultsContent"></span>
     <span class="hint">@T["Content displayed when no results are found."]</span>
-</fieldset>
-
-<fieldset class="form-group" asp-validation-class-for="PageSize">
-    <label asp-for="PageSize">@T["Page Size"]</label>
-    <input asp-for="PageSize" class="form-control content-preview-text content-caption-text" />
-    <span asp-validation-for="PageSize"></span>
-    <span class="hint">@T["Number of items to display within search results."]</span>
 </fieldset>

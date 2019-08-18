@@ -17,6 +17,8 @@ namespace Etch.OrchardCore.Search.Models
         public string ItemsDisplayType { get; set; } = "Summary";
 
         public int PageSize { get; set; } = DefaultPageSize;
+
+        public string Query { get; set; }
     }
 
     public class SiteSearchContentTypeSettings
@@ -29,6 +31,9 @@ namespace Etch.OrchardCore.Search.Models
 
         [JsonProperty("emptyResultsContent")]
         public string EmptyResultsContent { get; set; }
+
+        [JsonProperty("query")]
+        public string Query { get; set; }
 
         [JsonProperty("viewMoreLinkText")]
         public string ViewMoreLinkText { get; set; }
