@@ -12,6 +12,10 @@ namespace Etch.OrchardCore.Search.ViewModels
 
         public string EmptyResultsContent { get; set; }
 
+        public string FilterInputPlaceholder { get; set; }
+
+        public string SubmitButtonLabel { get; set; }
+
         [Required]
         public string Query { get; set; } 
 

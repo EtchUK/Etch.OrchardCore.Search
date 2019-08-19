@@ -159,6 +159,20 @@
     </div>
 </fieldset>
 
+<fieldset class="form-group" asp-validation-class-for="FilterInputPlaceholder">
+    <label asp-for="FilterInputPlaceholder">@T["Term Input Placeholder"]</label>
+    <input asp-for="FilterInputPlaceholder" class="form-control content-preview-text content-caption-text" />
+    <span asp-validation-for="FilterInputPlaceholder"></span>
+    <span class="hint">@T["Placeholder for input field for entering search term."]</span>
+</fieldset>
+
+<fieldset class="form-group" asp-validation-class-for="SubmitButtonLabel">
+    <label asp-for="SubmitButtonLabel">@T["Submit Button Label"]</label>
+    <input asp-for="SubmitButtonLabel" class="form-control content-preview-text content-caption-text" />
+    <span asp-validation-for="SubmitButtonLabel"></span>
+    <span class="hint">@T["Label for button that triggers search."]</span>
+</fieldset>
+
 <fieldset class="form-group" asp-validation-class-for="EmptyResultsContent">
     <label asp-for="EmptyResultsContent">@T["Empty Results Content"]</label>
     <input asp-for="EmptyResultsContent" class="form-control content-preview-text content-caption-text" />

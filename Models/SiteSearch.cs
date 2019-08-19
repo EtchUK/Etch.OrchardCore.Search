@@ -12,13 +12,21 @@ namespace Etch.OrchardCore.Search.Models
 
         public SiteSearchDisplayType DisplayType { get; set; } = SiteSearchDisplayType.List;
 
-        public string EmptyResultsContent { get; set; } = "Unable to find anything that matches your search.";
-
         public string ItemsDisplayType { get; set; } = "Summary";
 
         public int PageSize { get; set; } = DefaultPageSize;
 
         public string Query { get; set; }
+
+        #region UI Properties
+
+        public string EmptyResultsContent { get; set; } = "Unable to find anything that matches your search.";
+
+        public string FilterInputPlaceholder { get; set; } = "Enter search term...";
+
+        public string SubmitButtonLabel { get; set; } = "Search";
+
+        #endregion
     }
 
     public class SiteSearchContentTypeSettings

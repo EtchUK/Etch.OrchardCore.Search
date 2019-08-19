@@ -83,10 +83,12 @@ namespace Etch.OrchardCore.Search.Drivers
                 m.ContentTypeSettings = JsonConvert.SerializeObject(part.ContentTypeSettings);
                 m.DisplayType = part.DisplayType;
                 m.EmptyResultsContent = part.EmptyResultsContent;
+                m.FilterInputPlaceholder = part.FilterInputPlaceholder;
                 m.ItemsDisplayType = part.ItemsDisplayType;
                 m.PageSize = part.PageSize;
                 m.Query = part.Query;
                 m.Queries = queries;
+                m.SubmitButtonLabel = part.SubmitButtonLabel;
             });
         }
 
@@ -99,9 +101,11 @@ namespace Etch.OrchardCore.Search.Drivers
                 part.ContentTypeSettings = CleanSettings(JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings));
                 part.DisplayType = model.DisplayType;
                 part.EmptyResultsContent = model.EmptyResultsContent;
+                part.FilterInputPlaceholder = model.FilterInputPlaceholder;
                 part.ItemsDisplayType = string.IsNullOrWhiteSpace(model.ItemsDisplayType) ? DefaultItemsDisplayType : model.ItemsDisplayType;
                 part.PageSize = model.PageSize;
                 part.Query = model.Query;
+                part.SubmitButtonLabel = model.SubmitButtonLabel;
             }
 
             return await EditAsync(part, context);
@@ -186,8 +190,10 @@ namespace Etch.OrchardCore.Search.Drivers
             {
                 model.EmptyResultsContent = part.EmptyResultsContent;
                 model.Filter = term;
+                model.FilterInputPlaceholder = part.FilterInputPlaceholder;
                 model.ItemsDisplayType = part.ItemsDisplayType;
                 model.Results = results;
+                model.SubmitButtonLabel = part.SubmitButtonLabel;
             })
             .Location("Detail", "Content:5");
         }
@@ -220,9 +226,11 @@ namespace Etch.OrchardCore.Search.Drivers
             {
                 model.EmptyResultsContent = part.EmptyResultsContent;
                 model.Filter = term;
+                model.FilterInputPlaceholder = part.FilterInputPlaceholder;
                 model.ItemsDisplayType = part.ItemsDisplayType;
                 model.Pager = pagerShape;
                 model.Results = items.Take(pager.PageSize).ToArray();
+                model.SubmitButtonLabel = part.SubmitButtonLabel;
             })
             .Location("Detail", "Content:5");
         }
