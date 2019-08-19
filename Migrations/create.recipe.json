@@ -57,6 +57,25 @@
         }
       ],
       "ContentParts": []
+    },
+    {
+      "name": "Queries",
+      "Queries": [
+        {
+          "Index": "Search",
+          "Template": "{\r\n    \"query\": {\r\n      \"bool\": {\r\n        \"must\" : [\r\n          { \"term\": { \"SearchablePart.ExcludeFromResults\" : \"false\" } },\r\n          { \"terms\" : { \"Content.ContentItem.ContentType\" : [\"Page\"] } },\r\n          { \r\n            \"bool\": {\r\n              \"should\" : [\r\n                { \"match\": { \"Html.Body\": \"{{ filter }}\" } },\r\n                { \"match\": { \"Paragraph.Text\": \"{{ filter }}\" } },\r\n                { \"match\": { \"SearchablePart.Keywords\": \"{{ filter }}\" } },\r\n                { \"match\": { \"Content.ContentItem.DisplayText.Analyzed\": \"{{ filter }}\" } }\r\n              ]\r\n            }\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    \"sort\": {\r\n        \"Content.ContentItem.DisplayText\": {\r\n            \"order\": \"asc\"\r\n        }\r\n    },\r\n    \"from\": {{ from }},\r\n    \"size\": {{ size }}\r\n}",
+          "ReturnContentItems": true,
+          "Name": "SiteSearch",
+          "Source": "Lucene",
+          "Schema": null
+        }
+      ]
+    },
+    {
+      "name": "lucene-index",
+      "Indices": [
+        "Search"
+      ]
     }
   ]
 }
