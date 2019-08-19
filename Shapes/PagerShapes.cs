@@ -62,8 +62,8 @@ namespace Etch.OrchardCore.Search.Shapes
             Shape.Metadata.Alternates.Clear();
             Shape.Metadata.Type = "List";
 
-            var previousText = PreviousText ?? T["<"];
-            var nextText = NextText ?? T[">"];
+            var previousText = PreviousText ?? T["Previous"];
+            var nextText = NextText ?? T["Next"];
 
             var routeData = new RouteValueDictionary(Html.ViewContext.RouteData.Values);
             var httpContextAccessor = DisplayContext.ServiceProvider.GetService<IHttpContextAccessor>();
