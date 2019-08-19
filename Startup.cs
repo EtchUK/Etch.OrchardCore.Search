@@ -2,6 +2,8 @@
 using Etch.OrchardCore.Search.Indexing;
 using Etch.OrchardCore.Search.Models;
 using Etch.OrchardCore.Search.Shapes;
+using Etch.OrchardCore.Search.ViewModels;
+using Fluid;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
@@ -16,7 +18,9 @@ namespace Etch.OrchardCore.Search
     {
         public Startup()
         {
-            
+            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchGroupedViewModel>();
+            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchListViewModel>();
+            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchGroupedResultsGroup>();
         }
 
         public override void ConfigureServices(IServiceCollection services)
