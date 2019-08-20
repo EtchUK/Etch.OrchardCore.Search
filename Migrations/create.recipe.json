@@ -1,81 +1,79 @@
 {
-  "name": "Etch.OrchardCore.Search",
-  "displayName": "Site Search",
-  "description": "Provides site search.",
-  "author": "Etch",
-  "website": "https://etchuk.com",
-  "version": "0.1.0",
-  "issetuprecipe": false,
-  "categories": ["search"],
-  "tags": ["search"],
-  "steps": [
-    {
-      "name": "ContentDefinition",
-      "ContentTypes": [
+    "name": "Etch.OrchardCore.Search",
+    "displayName": "Site Search",
+    "description": "Provides site search.",
+    "author": "Etch",
+    "website": "https://etchuk.com",
+    "version": "0.1.0",
+    "issetuprecipe": false,
+    "categories": ["search"],
+    "tags": ["search"],
+    "steps": [
         {
-          "Name": "SiteSearch",
-          "DisplayName": "Site Search",
-          "Settings": {
-            "Creatable": "True",
-            "Draftable": "True",
-            "Versionable": "True",
-            "Listable": "True",
-            "Securable": "True",
-            "Stereotype": null
-          },
-          "ContentTypePartDefinitionRecords": [
-            {
-              "PartName": "SiteSearch",
-              "Name": "SiteSearch",
-              "Settings": {
-                "Position": "2"
-              }
-            },
-            {
-              "PartName": "AutoroutePart",
-              "Name": "AutoroutePart",
-              "Settings": {
-                "DisplayName": null,
-                "Description": null,
-                "Editor": null,
-                "Pattern": "{{ ContentItem | display_text | slugify }}",
-                "AllowCustomPath": "True",
-                "AllowUpdatePath": "True",
-                "ShowHomepageOption": "False",
-                "ContentIndexSettings": {},
-                "Position": "1"
-              }
-            },
-            {
-              "PartName": "TitlePart",
-              "Name": "TitlePart",
-              "Settings": {
-                "Position": "0"
-              }
-            }
-          ]
-        }
-      ],
-      "ContentParts": []
-    },
-    {
-      "name": "Queries",
-      "Queries": [
+            "name": "ContentDefinition",
+            "ContentTypes": [
+                {
+                    "Name": "SiteSearch",
+                    "DisplayName": "Site Search",
+                    "Settings": {
+                        "Creatable": "True",
+                        "Draftable": "True",
+                        "Versionable": "True",
+                        "Listable": "True",
+                        "Securable": "True",
+                        "Stereotype": null
+                    },
+                    "ContentTypePartDefinitionRecords": [
+                        {
+                            "PartName": "SiteSearch",
+                            "Name": "SiteSearch",
+                            "Settings": {
+                                "Position": "2"
+                            }
+                        },
+                        {
+                            "PartName": "AutoroutePart",
+                            "Name": "AutoroutePart",
+                            "Settings": {
+                                "DisplayName": null,
+                                "Description": null,
+                                "Editor": null,
+                                "Pattern": "{{ ContentItem | display_text | slugify }}",
+                                "AllowCustomPath": "True",
+                                "AllowUpdatePath": "True",
+                                "ShowHomepageOption": "False",
+                                "ContentIndexSettings": {},
+                                "Position": "1"
+                            }
+                        },
+                        {
+                            "PartName": "TitlePart",
+                            "Name": "TitlePart",
+                            "Settings": {
+                                "Position": "0"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "ContentParts": []
+        },
         {
-          "Index": "Search",
-          "Template": "{\r\n    \"query\": {\r\n      \"bool\": {\r\n        \"must\" : [\r\n          { \"term\": { \"SearchablePart.ExcludeFromResults\" : \"false\" } },\r\n          { \"terms\" : { \"Content.ContentItem.ContentType\" : [\"Page\"] } },\r\n          { \r\n            \"bool\": {\r\n              \"should\" : [\r\n                { \"match\": { \"Html.Body\": \"{{ filter }}\" } },\r\n                { \"match\": { \"Paragraph.Text\": \"{{ filter }}\" } },\r\n                { \"match\": { \"SearchablePart.Keywords\": \"{{ filter }}\" } },\r\n                { \"match\": { \"Content.ContentItem.DisplayText.Analyzed\": \"{{ filter }}\" } }\r\n              ]\r\n            }\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    \"sort\": {\r\n        \"Content.ContentItem.DisplayText\": {\r\n            \"order\": \"asc\"\r\n        }\r\n    },\r\n    \"from\": {{ from }},\r\n    \"size\": {{ size }}\r\n}",
-          "ReturnContentItems": true,
-          "Name": "SiteSearch",
-          "Source": "Lucene",
-          "Schema": null
+            "name": "Queries",
+            "Queries": [
+                {
+                    "Index": "Search",
+                    "Template": "{\r\n    \"query\": {\r\n      \"bool\": {\r\n        \"must\" : [\r\n          { \"term\": { \"SearchablePart.ExcludeFromResults\" : \"false\" } },\r\n          { \"terms\" : { \"Content.ContentItem.ContentType\" : [\"BlogPost\", \"Page\"] } },\r\n          { \r\n            \"bool\": {\r\n              \"should\" : [\r\n                { \"match\": { \"HtmlBodyPart\": \"{{ filter }}\" } },\r\n                { \"match\": { \"Html.Body\": \"{{ filter }}\" } },\r\n                { \"match\": { \"Paragraph.Text\": \"{{ filter }}\" } },\r\n                { \"match\": { \"SearchablePart.Keywords\": \"{{ filter }}\" } },\r\n                { \"match\": { \"Content.ContentItem.DisplayText.Analyzed\": \"{{ filter }}\" } }\r\n              ]\r\n            }\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    \"sort\": {\r\n        \"Content.ContentItem.DisplayText\": {\r\n            \"order\": \"asc\"\r\n        }\r\n    },\r\n    \"from\": {{ from }},\r\n    \"size\": {{ size }}\r\n}",
+                    "ReturnContentItems": true,
+                    "Name": "SiteSearch",
+                    "Source": "Lucene",
+                    "Schema": null
+                }
+            ]
+        },
+        {
+            "name": "lucene-index",
+            "Indices": ["Search"]
         }
-      ]
-    },
-    {
-      "name": "lucene-index",
-      "Indices": [
-        "Search"
-      ]
-    }
-  ]
+    ]
 }
