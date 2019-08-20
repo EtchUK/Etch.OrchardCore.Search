@@ -8,6 +8,14 @@ namespace Etch.OrchardCore.Search.ViewModels
     public class SiteSearchGroupedViewModel : SiteSearchViewModel
     {
         public IList<SiteSearchGroupedResultsGroup> Results { get; set; }
+
+        public bool HasAnyMatches
+        {
+            get
+            {
+                return Results != null && Results.Any(x => x.Items != null && x.Items.Length > 0);
+            }
+        }
     }
 
     public class SiteSearchGroupedResultsGroup
