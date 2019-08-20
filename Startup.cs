@@ -21,6 +21,7 @@ namespace Etch.OrchardCore.Search
             TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchGroupedViewModel>();
             TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchListViewModel>();
             TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchGroupedResultsGroup>();
+            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchContentTypeSettings>();
         }
 
         public override void ConfigureServices(IServiceCollection services)
