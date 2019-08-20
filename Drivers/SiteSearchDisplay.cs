@@ -162,10 +162,11 @@ namespace Etch.OrchardCore.Search.Drivers
             if (!string.IsNullOrWhiteSpace(term))
             {
                 var searchableTypes = GetSearchableContentTypes();
-                var types = part.ContentTypeSettings.Where(x => x.Included).ToArray();
+                var types = part.ContentTypeSettings.Where(x => x.Included && !string.IsNullOrEmpty(x.Query)).ToArray();
                 var parameters = new Dictionary<string, object>
                     {
                         { "filter", term },
+                        { "from", 0 },
                         { "size", part.PageSize }
                     };
 
