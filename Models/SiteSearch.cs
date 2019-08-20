@@ -40,6 +40,9 @@ namespace Etch.OrchardCore.Search.Models
         [JsonProperty("emptyResultsContent")]
         public string EmptyResultsContent { get; set; }
 
+        [JsonProperty("heading")]
+        public string Heading { get; set; }
+
         [JsonProperty("query")]
         public string Query { get; set; } = string.Empty;
 

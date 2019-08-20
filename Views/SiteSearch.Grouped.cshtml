@@ -26,7 +26,7 @@
 
             @foreach (var resultGroup in Model.Results)
             {
-                <h3>@resultGroup.ContentType</h3>
+                <h3>@(string.IsNullOrWhiteSpace(resultGroup.Settings.Heading) ? resultGroup.ContentType : resultGroup.Settings.Heading)</h3>
 
                 @if (resultGroup.HasResults)
                 {

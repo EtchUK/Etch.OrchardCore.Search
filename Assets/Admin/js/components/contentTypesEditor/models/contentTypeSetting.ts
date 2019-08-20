@@ -1,6 +1,7 @@
 export default interface IContentTypeSettings {
     contentType: string;
+    emptyResultsContent: string;
+    heading: string;
     included: boolean;
-    noResultsMessage: string;
     query: string;
 }

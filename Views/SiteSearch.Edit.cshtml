@@ -116,43 +116,51 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="form-group" asp-validation-class-for="Query">
-                        <label for="'query' + item.contentType">@T["Query"]</label>
+                    <div v-if="item.included">
+                        <fieldset class="form-group" asp-validation-class-for="Query">
+                            <label for="'query' + item.contentType">@T["Query"]</label>
 
-                        @if (Model.Queries.Any())
-                        {
-                            <select id="'query' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.query">
-                                <option value="">@T["- Please select query -"]</option>
-                                @foreach (var query in Model.Queries)
-                                {
-                                    <option>@query.Name</option>
-                                }
-                            </select>
-                            <span class="hint">@T["Choose which query should be used for search."]</span>
-                        }
-                        else
-                        {
-                            <p class="alert alert-warning"><a asp-action="Index" asp-controller="Admin" asp-route-area="OrchardCore.Queries">@T["Please create a query that can be used for search."]</a></p>
-                        }
-                    </fieldset>
+                            @if (Model.Queries.Any())
+                            {
+                                <select id="'query' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.query">
+                                    <option value="">@T["- Please select query -"]</option>
+                                    @foreach (var query in Model.Queries)
+                                    {
+                                        <option>@query.Name</option>
+                                    }
+                                </select>
+                                <span class="hint">@T["Choose which query should be used for search."]</span>
+                            }
+                            else
+                            {
+                                <p class="alert alert-warning"><a asp-action="Index" asp-controller="Admin" asp-route-area="OrchardCore.Queries">@T["Please create a query that can be used for search."]</a></p>
+                            }
+                        </fieldset>
 
-                    <fieldset class="form-group">
-                        <label for="'emptyResultsContent_' + item.contentType">@T["Empty Results Content"]</label>
-                        <input :id="'emptyResultsContent_' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.emptyResultsContent" />
-                        <span class="hint">@T["Content displayed when no results are found for this content type."]</span>
-                    </fieldset>
+                        <fieldset class="form-group">
+                            <label for="'heading_' + item.contentType">@T["Heading"]</label>
+                            <input :id="'heading_' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.heading" />
+                            <span class="hint">@T["Heading to be displayed with search results. If left blank, content type display name will be used."]</span>
+                        </fieldset>
 
-                    <fieldset class="form-group">
-                        <label for="'viewMoreLinkUrl' + item.contentType">@T["View More Link URL"]</label>
-                        <input id="'viewMoreLinkUrl' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkUrl" />
-                        <span class="hint">@T["Link to view more of this content type. Link will have search term appended via query string. If left blank, no link will be displayed."]</span>
-                    </fieldset>
+                        <fieldset class="form-group">
+                            <label for="'emptyResultsContent_' + item.contentType">@T["Empty Results Content"]</label>
+                            <input :id="'emptyResultsContent_' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.emptyResultsContent" />
+                            <span class="hint">@T["Content displayed when no results are found for this content type."]</span>
+                        </fieldset>
 
-                    <fieldset class="form-group">
-                        <label for="'viewMoreLinkText' + item.contentType">@T["View More Link Label"]</label>
-                        <input id="'viewMoreLinkText' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkText" />
-                        <span class="hint">@T["Label for link to view more for content type."]</span>
-                    </fieldset>
+                        <fieldset class="form-group">
+                            <label for="'viewMoreLinkUrl' + item.contentType">@T["View More Link URL"]</label>
+                            <input id="'viewMoreLinkUrl' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkUrl" />
+                            <span class="hint">@T["Link to view more of this content type. Link will have search term appended via query string. If left blank, no link will be displayed."]</span>
+                        </fieldset>
+
+                        <fieldset class="form-group">
+                            <label for="'viewMoreLinkText' + item.contentType">@T["View More Link Label"]</label>
+                            <input id="'viewMoreLinkText' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkText" />
+                            <span class="hint">@T["Label for link to view more for content type."]</span>
+                        </fieldset>
+                    </div>
                 </div>
             </div>
         </draggable>
