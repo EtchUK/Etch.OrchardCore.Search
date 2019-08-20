@@ -43,7 +43,7 @@ Firstly is the ability to flag when content items should be omitted from search 
 
 ![Screen recording of exluding content item from search results](https://github.com/etchuk/Etch.OrchardCore.Search/raw/master/docs/demo-exclude-from-search-results.gif)
 
-The "SearchablePart" has a field for specify keywords that when used as a search term it'll return the content item.
+The `Searchable` part also has a field for specify keywords that when used as a search term it'll return the content item.
 
 ![Screen recording of specific keywords for matching search](https://github.com/etchuk/Etch.OrchardCore.Search/raw/master/docs/demo-keywords.gif)
 
