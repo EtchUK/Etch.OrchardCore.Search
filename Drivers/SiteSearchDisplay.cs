@@ -1,9 +1,11 @@
 ﻿using Etch.OrchardCore.Search.Extensions;
 using Etch.OrchardCore.Search.Models;
+using Etch.OrchardCore.Search.Settings;
 using Etch.OrchardCore.Search.Shapes;
 using Etch.OrchardCore.Search.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
@@ -12,6 +14,7 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Mvc.ModelBinding;
 using OrchardCore.Navigation;
 using OrchardCore.Queries;
 using System.Collections.Generic;
@@ -35,17 +38,19 @@ namespace Etch.OrchardCore.Search.Drivers
         private readonly IContentDefinitionManager _contentDefinitionManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IQueryManager _queryManager;
+        private readonly IStringLocalizer<SiteSearchPartDisplay> T;
         private readonly YesSql.ISession _session;
 
         #endregion
 
         #region Constructor
 
-        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, IQueryManager queryManager, YesSql.ISession session)
+        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, IQueryManager queryManager, IStringLocalizer<SiteSearchPartDisplay> localizer, YesSql.ISession session)
         {
             _contentDefinitionManager = contentDefinitionManager;
             _httpContextAccessor = httpContextAccessor;
             _queryManager = queryManager;
+            T = localizer;
             _session = session;
         }
 
@@ -106,6 +111,11 @@ namespace Etch.OrchardCore.Search.Drivers
                 part.PageSize = model.PageSize;
                 part.Query = model.Query;
                 part.SubmitButtonLabel = model.SubmitButtonLabel;
+            }
+
+            if (string.IsNullOrEmpty(part.Query) && part.DisplayType == SiteSearchDisplayType.List)
+            {
+                updater.ModelState.AddModelError(Prefix, nameof(part.Query), T["The Query field is required."]);
             }
 
             return await EditAsync(part, context);

@@ -1,6 +1,5 @@
 ﻿using Etch.OrchardCore.Search.Settings;
 using OrchardCore.Queries;
-using System.ComponentModel.DataAnnotations;
 
 namespace Etch.OrchardCore.Search.ViewModels
 {
@@ -16,8 +15,7 @@ namespace Etch.OrchardCore.Search.ViewModels
 
         public string SubmitButtonLabel { get; set; }
 
-        [Required]
-        public string Query { get; set; } 
+        public string Query { get; set; }
 
         public Query[] Queries { get; set; }
 
