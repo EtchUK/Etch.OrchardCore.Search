@@ -70,7 +70,7 @@ namespace Etch.OrchardCore.Search.Drivers
 
         public override async Task<IDisplayResult> EditAsync(SiteSearch part, BuildPartEditorContext context)
         {
-            if (part.ContentTypeSettings == null)
+            if (part.ContentTypeSettings == null || part.ContentTypeSettings.Count() == 0)
             {
                 part.ContentTypeSettings = GetSearchableContentTypes()
                     .Select(x => new SiteSearchContentTypeSettings
@@ -79,6 +79,20 @@ namespace Etch.OrchardCore.Search.Drivers
                         Included = true
                     })
                     .ToArray();
+            }
+            else
+            {
+                var searchableContentTypes = GetSearchableContentTypes()
+                    .Where(x => part.ContentTypeSettings.Any(y => y.ContentType != x.Name))
+                    .Select(x => new SiteSearchContentTypeSettings
+                    {
+                        ContentType = x.Name,
+                        Included = true
+                    }).ToList();
+
+                searchableContentTypes.AddRange(part.ContentTypeSettings);
+
+                part.ContentTypeSettings = searchableContentTypes.ToArray();
             }
 
             var queries = (await _queryManager.ListQueriesAsync()).ToArray();
