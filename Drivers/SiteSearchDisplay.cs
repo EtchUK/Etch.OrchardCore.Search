@@ -1,9 +1,11 @@
 ﻿using Etch.OrchardCore.Search.Extensions;
 using Etch.OrchardCore.Search.Models;
+using Etch.OrchardCore.Search.Settings;
 using Etch.OrchardCore.Search.Shapes;
 using Etch.OrchardCore.Search.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
@@ -12,6 +14,7 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Mvc.ModelBinding;
 using OrchardCore.Navigation;
 using OrchardCore.Queries;
 using System.Collections.Generic;
@@ -36,17 +39,19 @@ namespace Etch.OrchardCore.Search.Drivers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IQueryManager _queryManager;
         private readonly YesSql.ISession _session;
+        private readonly IStringLocalizer<SiteSearchPartDisplay> T;
 
         #endregion
 
         #region Constructor
 
-        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, IQueryManager queryManager, YesSql.ISession session)
+        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SiteSearchPartDisplay> localizer, IQueryManager queryManager, YesSql.ISession session)
         {
             _contentDefinitionManager = contentDefinitionManager;
             _httpContextAccessor = httpContextAccessor;
             _queryManager = queryManager;
             _session = session;
+            T = localizer;
         }
 
         #endregion
@@ -65,7 +70,7 @@ namespace Etch.OrchardCore.Search.Drivers
 
         public override async Task<IDisplayResult> EditAsync(SiteSearch part, BuildPartEditorContext context)
         {
-            if (part.ContentTypeSettings == null)
+            if (part.ContentTypeSettings == null || !part.ContentTypeSettings.Any())
             {
                 part.ContentTypeSettings = GetSearchableContentTypes()
                     .Select(x => new SiteSearchContentTypeSettings
@@ -74,6 +79,20 @@ namespace Etch.OrchardCore.Search.Drivers
                         Included = true
                     })
                     .ToArray();
+            }
+            else
+            {
+                var searchableContentTypes = GetSearchableContentTypes()
+                    .Where(x => part.ContentTypeSettings.Any(y => y.ContentType != x.Name))
+                    .Select(x => new SiteSearchContentTypeSettings
+                    {
+                        ContentType = x.Name,
+                        Included = true
+                    }).ToList();
+
+                searchableContentTypes.AddRange(part.ContentTypeSettings);
+
+                part.ContentTypeSettings = searchableContentTypes.ToArray();
             }
 
             var queries = (await _queryManager.ListQueriesAsync()).ToArray();
@@ -106,6 +125,11 @@ namespace Etch.OrchardCore.Search.Drivers
                 part.PageSize = model.PageSize;
                 part.Query = model.Query;
                 part.SubmitButtonLabel = model.SubmitButtonLabel;
+            }
+
+            if (string.IsNullOrEmpty(part.Query) && part.DisplayType == SiteSearchDisplayType.List)
+            {
+                updater.ModelState.AddModelError(Prefix, nameof(part.Query), T["Query field is required."]);
             }
 
             return await EditAsync(part, context);
