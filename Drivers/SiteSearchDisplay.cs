@@ -38,20 +38,20 @@ namespace Etch.OrchardCore.Search.Drivers
         private readonly IContentDefinitionManager _contentDefinitionManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IQueryManager _queryManager;
-        private readonly IStringLocalizer<SiteSearchPartDisplay> T;
         private readonly YesSql.ISession _session;
+        private readonly IStringLocalizer<SiteSearchPartDisplay> T;
 
         #endregion
 
         #region Constructor
 
-        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, IQueryManager queryManager, IStringLocalizer<SiteSearchPartDisplay> localizer, YesSql.ISession session)
+        public SiteSearchPartDisplay(IContentDefinitionManager contentDefinitionManager, IHttpContextAccessor httpContextAccessor, IStringLocalizer<SiteSearchPartDisplay> localizer, IQueryManager queryManager, YesSql.ISession session)
         {
             _contentDefinitionManager = contentDefinitionManager;
             _httpContextAccessor = httpContextAccessor;
             _queryManager = queryManager;
-            T = localizer;
             _session = session;
+            T = localizer;
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace Etch.OrchardCore.Search.Drivers
 
         public override async Task<IDisplayResult> EditAsync(SiteSearch part, BuildPartEditorContext context)
         {
-            if (part.ContentTypeSettings == null || part.ContentTypeSettings.Count() == 0)
+            if (part.ContentTypeSettings == null || !part.ContentTypeSettings.Any())
             {
                 part.ContentTypeSettings = GetSearchableContentTypes()
                     .Select(x => new SiteSearchContentTypeSettings
@@ -129,7 +129,7 @@ namespace Etch.OrchardCore.Search.Drivers
 
             if (string.IsNullOrEmpty(part.Query) && part.DisplayType == SiteSearchDisplayType.List)
             {
-                updater.ModelState.AddModelError(Prefix, nameof(part.Query), T["The Query field is required."]);
+                updater.ModelState.AddModelError(Prefix, nameof(part.Query), T["Query field is required."]);
             }
 
             return await EditAsync(part, context);
