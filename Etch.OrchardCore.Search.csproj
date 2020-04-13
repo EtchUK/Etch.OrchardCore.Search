@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.0.1-beta</Version>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Version>0.1.0-rc1</Version>
     <PackageId>Etch.OrchardCore.Search</PackageId>
     <Title>Site Search</Title>
     <Authors>Etch UK</Authors>
@@ -18,20 +18,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.ContentManagement.Display" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.ContentTypes" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.Indexing.Abstractions" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.Lucene" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.Navigation" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.Queries.Abstractions" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-beta3-71077" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71077" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.ContentManagement.Display" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.ContentTypes" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.Indexing.Abstractions" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.Lucene" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.Navigation" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.Queries.Abstractions" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc1-10004" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc1-10004" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>
