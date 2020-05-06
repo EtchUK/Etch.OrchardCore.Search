@@ -18,7 +18,8 @@ namespace Etch.OrchardCore.Search.Drivers
             {
                 m.ExcludeFromResults = part.ExcludeFromResults;
                 m.Keywords = part.Keywords;
-            });
+            })
+            .Location("Parts#Search:5");
         }
 
         public async override Task<IDisplayResult> UpdateAsync(SearchablePart part, IUpdateModel updater)
