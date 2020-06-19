@@ -26,11 +26,11 @@ namespace Etch.OrchardCore.Search
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ContentPart, SiteSearch>();
-            services.AddSingleton<ContentPart, SearchablePart>();
+            services.AddContentPart<SiteSearch>()
+                .UseDisplayDriver<SiteSearchPartDisplay>();
 
-            services.AddScoped<IContentPartDisplayDriver, SiteSearchPartDisplay>();
-            services.AddScoped<IContentPartDisplayDriver, SearchablePartDisplay>();
+            services.AddContentPart<SearchablePart>()
+                .UseDisplayDriver<SearchablePartDisplay>();
 
             services.AddScoped<IContentPartIndexHandler, SearchablePartIndexHandler>();
 

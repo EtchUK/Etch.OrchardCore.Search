@@ -204,7 +204,7 @@ namespace Etch.OrchardCore.Search.Drivers
                         results.Add(new SiteSearchGroupedResultsGroup
                         {
                             ContentType = displayName,
-                            Items = await _queryManager.ExecuteQueryAsync(query, parameters) as ContentItem[],
+                            Items = (await _queryManager.ExecuteQueryAsync(query, parameters)).Items as ContentItem[],
                             Settings = type
                         });
                     }
@@ -242,7 +242,7 @@ namespace Etch.OrchardCore.Search.Drivers
                         { "size", pager.PageSize + 1 }
                     };
 
-                items = await _queryManager.ExecuteQueryAsync(query, parameters) as ContentItem[];
+                items = (await _queryManager.ExecuteQueryAsync(query, parameters)).Items as ContentItem[];
             }
 
             dynamic pagerShape = await CreatePager(context, pager, term, items.Length > pager.PageSize);

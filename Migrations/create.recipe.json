@@ -82,11 +82,18 @@
                 }
             ]
         },
-        {
-            "name": "lucene-index",
-            "Indices": [
-                "Search"
-            ]
-        }
+      {
+        "name": "lucene-index",
+        "Indices": [
+          {
+            "Search": {
+              "AnalyzerName": "standardanalyzer",
+              "IndexLatest": false,
+              "IndexedContentTypes": [],
+              "Culture": "any"
+            }
+          }
+        ]
+      }
     ]
 }

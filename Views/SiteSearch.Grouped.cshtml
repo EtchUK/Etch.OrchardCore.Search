@@ -3,7 +3,7 @@
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 
 <section class="section">
-    <div class="section__content">
+    <div class="constrain">
         <form class="form form--centered" method="get">
             <div class="field-group field-group--horizontal">
                 <div class="field">
@@ -21,7 +21,7 @@
 @if (Model.IsSearching)
 {
     <section class="section">
-        <div class="section__content">
+        <div class="constrain">
             <h2>@T["Search Results"]</h2>
 
             @foreach (var resultGroup in Model.Results)
