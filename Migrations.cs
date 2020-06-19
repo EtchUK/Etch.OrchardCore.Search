@@ -33,12 +33,12 @@ namespace Etch.OrchardCore.Search
                 .WithDescription("Adds site search to page.")
                 .WithDisplayName("Site Search"));
 
-            await _recipeMigrator.ExecuteAsync("create.recipe.json", this);
-
             _contentDefinitionManager.AlterPartDefinition("SearchablePart", part => part
                 .Attachable()
                 .WithDescription("Makes content type included within site search.")
                 .WithDisplayName("Searchable"));
+
+            await _recipeMigrator.ExecuteAsync("create.recipe.json", this);
 
             return 1;
         }

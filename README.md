@@ -8,7 +8,7 @@ Module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) for adding 
 
 ## Orchard Core Reference
 
-This module is referencing the RC1 build of Orchard Core ([`1.0.0-rc1-10004`](https://www.nuget.org/packages/OrchardCore.Module.Targets/1.0.0-rc1-10004)).
+This module is referencing the RC2 build of Orchard Core ([`1.0.0-rc2-13450`](https://www.nuget.org/packages/OrchardCore.Module.Targets/1.0.0-rc2-13450)).
 
 ## Installing
 
@@ -22,6 +22,7 @@ Alternatively you can [download the source](https://github.com/etchuk/Etch.Orcha
 
 -   Attach `SearchablePart` to content types you'd like to be included in the site search.
 -   Ensure content types that have `SearchablePart` have any fields/parts that need to be searched on, included in index (suggest having "Stored", "Analyzed" & "Santized" checked).
+-   Update "Search" index to include all content items to be included in the site search.
 -   Check "SiteSearch" query template (go to "Configuration" -> "Queries") to ensure all the fields you'd like to be searched are included in the match definitions.
 -   Create new "SiteSearch" content type with desired configuration.
 
@@ -45,11 +46,11 @@ The `Searchable` part also has a field for specify keywords that when used as a 
 
 ![Screen recording of specific keywords for matching search](https://github.com/etchuk/Etch.OrchardCore.Search/raw/master/docs/demo-keywords.gif)
 
-### Queries
+### Indexes/Queries
 
 The site search uses the [OrchardCore.Queries](https://orchardcore.readthedocs.io/en/latest/OrchardCore.Modules/OrchardCore.Queries/README/) module in combination with [OrchardCore.Lucene](https://orchardcore.readthedocs.io/en/latest/OrchardCore.Modules/OrchardCore.Lucene/README/) in order to scan indexed content items and present matches to the user.
 
-When enabling the module, an example query ("SiteSearch") and index ("Search") are created. The next step is to go through all content types that are being searched and ensure any parts/fields that should be scanned for a match are included in the index (e.g. `TitlePart` & `HtmlBody` parts). Once you've included the various parts/fields in the index, it'll be a good idea to rebuild the "Search" index.
+When enabling the module, an example query ("SiteSearch") and index ("Search") are created. By default the "Search" index won't have any content types configured to be included so any content types that should be included in the search results should be included in the index. The next step is to go through all content types that are being searched and ensure any parts/fields that should be scanned for a match are included in the index (e.g. `TitlePart` & `HtmlBody` parts). Once you've configured the content types and included the various parts/fields in the index it'll be a good idea to rebuild the "Search" index.
 
 The "SiteSearch" query that comes by default will perform the following search logic to determine whether a content item is included in the search results.
 

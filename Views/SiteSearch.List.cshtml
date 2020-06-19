@@ -3,17 +3,10 @@
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 
 <section class="section">
-    <div class="section__content">
-        <form class="form form--centered" method="get">
-            <div class="field-group field-group--horizontal">
-                <div class="field">
-                    <input id="filter" name="filter" type="text" value="@Model.Filter" placeholder="@Model.FilterInputPlaceholder" class="form-control">
-                </div>
-
-                <div class="field">
-                    <button type="submit" class="btn btn--primary">@Model.SubmitButtonLabel</button>
-                </div>
-            </div>
+    <div class="constrain">
+        <form class="form form--horizontal" method="get">
+            <input id="filter" name="filter" type="text" value="@Model.Filter" placeholder="@Model.FilterInputPlaceholder" class="input">
+            <button type="submit" class="btn btn--primary">@Model.SubmitButtonLabel</button>
         </form>
     </div>
 </section>
@@ -21,7 +14,7 @@
 @if (Model.IsSearching)
 {
     <section class="section">
-        <div class="section__content">
+        <div class="constrain">
             <h2>@T["Search Results"]</h2>
 
             @if (Model.HasResults)
