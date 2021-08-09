@@ -71,7 +71,14 @@
             <option value="">- Please select query -</option>
             @foreach (var query in Model.Queries)
             {
-                <option value="@query.Name" selected="@(query.Name == Model.Query ? "selected" : "")">@query.Name</option>
+                if (query.Name == Model.Query)
+                {
+                    <option value="@query.Name" selected>@query.Name</option>
+                } 
+                else
+                {
+                    <option value="@query.Name">@query.Name</option>
+                }
             }
         </select>
         <span asp-validation-for="Query"></span>
