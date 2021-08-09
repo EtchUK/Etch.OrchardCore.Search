@@ -16,14 +16,6 @@ namespace Etch.OrchardCore.Search
 {
     public class Startup : StartupBase
     {
-        public Startup()
-        {
-            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchGroupedViewModel>();
-            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchListViewModel>();
-            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchGroupedResultsGroup>();
-            TemplateContext.GlobalMemberAccessStrategy.Register<SiteSearchContentTypeSettings>();
-        }
-
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddContentPart<SiteSearch>()
@@ -38,6 +30,14 @@ namespace Etch.OrchardCore.Search
             services.AddShapeAttributes<PagerShapes>();
 
             services.AddScoped<IDataMigration, Migrations>();
+
+            services.Configure<TemplateOptions>(o =>
+            {
+                o.MemberAccessStrategy.Register<SiteSearchGroupedViewModel>();
+                o.MemberAccessStrategy.Register<SiteSearchListViewModel>();
+                o.MemberAccessStrategy.Register<SiteSearchGroupedResultsGroup>();
+                o.MemberAccessStrategy.Register<SiteSearchContentTypeSettings>();
+            });
         }
     }
 }
