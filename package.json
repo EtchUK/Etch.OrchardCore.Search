@@ -1,6 +1,6 @@
 {
   "name": "etch.orchardcore.earch",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Module for Orchard Core that provides site search.",
   "scripts": {
     "build": "webpack",
