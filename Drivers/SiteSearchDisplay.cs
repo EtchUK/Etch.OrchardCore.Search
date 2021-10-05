@@ -17,6 +17,7 @@ using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Mvc.ModelBinding;
 using OrchardCore.Navigation;
 using OrchardCore.Queries;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,9 +61,14 @@ namespace Etch.OrchardCore.Search.Drivers
 
         public override async Task<IDisplayResult> DisplayAsync(SiteSearch part, BuildPartDisplayContext context)
         {
-            if (part.DisplayType == Settings.SiteSearchDisplayType.Grouped)
+            if (context.DisplayType != "Detail")
             {
-                return await GroupedAsync(part, context);
+                return null;
+            }
+
+            if (part.DisplayType == SiteSearchDisplayType.Grouped)
+            {
+                return await GroupedAsync(part);
             }
 
             return await ListAsync(part, context);
@@ -177,7 +183,7 @@ namespace Etch.OrchardCore.Search.Drivers
                 .ToList();
         }
 
-        private async Task<IDisplayResult> GroupedAsync(SiteSearch part, BuildPartDisplayContext context)
+        private async Task<IDisplayResult> GroupedAsync(SiteSearch part)
         {
             var request = _httpContextAccessor.HttpContext.Request;
             var term = request.GetQueryString(FilterQueryStringParameter);
@@ -197,7 +203,7 @@ namespace Etch.OrchardCore.Search.Drivers
                 foreach (var type in types)
                 {
                     var query = await _queryManager.GetQueryAsync(type.Query);
-                    var displayName = searchableTypes.Where(x => x.Name == type.ContentType).SingleOrDefault()?.DisplayName ?? string.Empty;
+                    var displayName = searchableTypes.SingleOrDefault(x => x.Name == type.ContentType)?.DisplayName ?? string.Empty;
 
                     if (!string.IsNullOrEmpty(displayName))
                     {
@@ -225,8 +231,6 @@ namespace Etch.OrchardCore.Search.Drivers
 
         private async Task<IDisplayResult> ListAsync(SiteSearch part, BuildPartDisplayContext context)
         {
-            var contentTypes = part.ContentTypeSettings.Where(x => x.Included).Select(x => x.ContentType).ToList();
-
             var request = _httpContextAccessor.HttpContext.Request;
             var pager = new Pager(request.GetPagerParameters(part.PageSize), part.PageSize);
             var term = request.GetQueryString(FilterQueryStringParameter);
@@ -245,7 +249,7 @@ namespace Etch.OrchardCore.Search.Drivers
                 items = (await _queryManager.ExecuteQueryAsync(query, parameters)).Items as ContentItem[];
             }
 
-            dynamic pagerShape = await CreatePager(context, pager, term, items.Length > pager.PageSize);
+            dynamic pagerShape = await CreatePager(context, pager, term, items != null && items.Length > pager.PageSize);
 
             return Initialize<SiteSearchListViewModel>("SiteSearch_List", model =>
             {
@@ -254,7 +258,7 @@ namespace Etch.OrchardCore.Search.Drivers
                 model.FilterInputPlaceholder = part.FilterInputPlaceholder;
                 model.ItemsDisplayType = part.ItemsDisplayType;
                 model.Pager = pagerShape;
-                model.Results = items.Take(pager.PageSize).ToArray();
+                model.Results = items != null ? items.Take(pager.PageSize).ToArray() : Array.Empty<ContentItem>();
                 model.SubmitButtonLabel = part.SubmitButtonLabel;
             })
             .Location("Detail", "Content:5");
