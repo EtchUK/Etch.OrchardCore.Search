@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <PackageId>Etch.OrchardCore.Search</PackageId>
     <Title>Site Search</Title>
     <Authors>Etch UK</Authors>
@@ -18,16 +18,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore.ContentManagement" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.ContentManagement.Display" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.ContentTypes" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.Indexing.Abstractions" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.Lucene" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.Navigation" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.Queries.Abstractions" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.ResourceManagement" Version="1.1.0" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.1.0" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.ContentManagement.Display" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.ContentTypes" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.Indexing.Abstractions" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.Lucene" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.Navigation" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.Queries.Abstractions" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.ResourceManagement" Version="1.3.0" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.3.0" />
   </ItemGroup>
 
   <ItemGroup>
