@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <PackageId>Etch.OrchardCore.Search</PackageId>
     <Title>Site Search</Title>
     <Authors>Etch UK</Authors>
