@@ -50,9 +50,9 @@
 </script>
 
 
-<h5>Search Settings</h5>
+<h5>@T["Search Settings"]</h5>
 
-<fieldset class="form-group" asp-validation-class-for="DisplayType">
+<fieldset class="mb-3" asp-validation-class-for="DisplayType">
     <label asp-for="DisplayType">@T["Display Type"]</label>
     <select asp-for="DisplayType" class="form-control content-preview-text content-caption-text">
         <option value="@SiteSearchDisplayType.Grouped">@T["Grouped - Results are grouped by content type"]</option>
@@ -62,7 +62,7 @@
     <span class="hint">@T["Define how search results are displayed."]</span>
 </fieldset>
 
-<fieldset class="form-group list-only" asp-validation-class-for="Query">
+<fieldset class="mb-3 list-only" asp-validation-class-for="Query">
     <label asp-for="Query">@T["Query"]</label>
 
     @if (Model.Queries.Any())
@@ -90,21 +90,21 @@
     }
 </fieldset>
 
-<fieldset class="form-group" asp-validation-class-for="PageSize">
+<fieldset class="mb-3" asp-validation-class-for="PageSize">
     <label asp-for="PageSize">@T["Page Size"]</label>
     <input asp-for="PageSize" class="form-control content-preview-text content-caption-text" />
     <span asp-validation-for="PageSize"></span>
     <span class="hint">@T["Number of items to display within search results."]</span>
 </fieldset>
 
-<fieldset class="form-group" asp-validation-class-for="ItemsDisplayType">
+<fieldset class="mb-3" asp-validation-class-for="ItemsDisplayType">
     <label asp-for="ItemsDisplayType">@T["Items Display Type"]</label>
     <input asp-for="ItemsDisplayType" class="form-control content-preview-text content-caption-text" />
     <span asp-validation-for="ItemsDisplayType"></span>
     <span class="hint">@T["Display type to use when rendering items within search results."]</span>
 </fieldset>
 
-<fieldset class="form-group grouped-only">
+<fieldset class="mb-3 grouped-only">
     <label>@T["Content Types"]</label>
     <span class="hint">— @T["The content types that should be included in the search results."]</span>
 
@@ -116,7 +116,7 @@
                 <div class="w-100 justify-content-between">
                     <h5 class="mb-2">{{ item.contentType }}</h5>
 
-                    <fieldset class="form-group">
+                    <fieldset class="mb-3">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" :id="'includedInSearch_' + item.contentType" class="custom-control-input" v-model="item.included" />
                             <label class="custom-control-label" :for="'includedInSearch_' + item.contentType">@T["Include in search results"]</label>
@@ -124,7 +124,7 @@
                     </fieldset>
 
                     <div v-if="item.included">
-                        <fieldset class="form-group" asp-validation-class-for="Query">
+                        <fieldset class="mb-3" asp-validation-class-for="Query">
                             <label for="'query' + item.contentType">@T["Query"]</label>
 
                             @if (Model.Queries.Any())
@@ -144,25 +144,25 @@
                             }
                         </fieldset>
 
-                        <fieldset class="form-group">
+                        <fieldset class="mb-3">
                             <label for="'heading_' + item.contentType">@T["Heading"]</label>
                             <input :id="'heading_' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.heading" />
                             <span class="hint">@T["Heading to be displayed with search results. If left blank, content type display name will be used."]</span>
                         </fieldset>
 
-                        <fieldset class="form-group">
+                        <fieldset class="mb-3">
                             <label for="'emptyResultsContent_' + item.contentType">@T["Empty Results Content"]</label>
                             <input :id="'emptyResultsContent_' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.emptyResultsContent" />
                             <span class="hint">@T["Content displayed when no results are found for this content type."]</span>
                         </fieldset>
 
-                        <fieldset class="form-group">
+                        <fieldset class="mb-3">
                             <label for="'viewMoreLinkUrl' + item.contentType">@T["View More Link URL"]</label>
                             <input id="'viewMoreLinkUrl' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkUrl" />
                             <span class="hint">@T["Link to view more of this content type. Link will have search term appended via query string. If left blank, no link will be displayed."]</span>
                         </fieldset>
 
-                        <fieldset class="form-group">
+                        <fieldset class="mb-3">
                             <label for="'viewMoreLinkText' + item.contentType">@T["View More Link Label"]</label>
                             <input id="'viewMoreLinkText' + item.contentType" class="form-control content-preview-text content-caption-text" v-model="item.viewMoreLinkText" />
                             <span class="hint">@T["Label for link to view more for content type."]</span>
@@ -174,21 +174,21 @@
     </div>
 </fieldset>
 
-<fieldset class="form-group" asp-validation-class-for="FilterInputPlaceholder">
+<fieldset class="mb-3" asp-validation-class-for="FilterInputPlaceholder">
     <label asp-for="FilterInputPlaceholder">@T["Term Input Placeholder"]</label>
     <input asp-for="FilterInputPlaceholder" class="form-control content-preview-text content-caption-text" />
     <span asp-validation-for="FilterInputPlaceholder"></span>
     <span class="hint">@T["Placeholder for input field for entering search term."]</span>
 </fieldset>
 
-<fieldset class="form-group" asp-validation-class-for="SubmitButtonLabel">
+<fieldset class="mb-3" asp-validation-class-for="SubmitButtonLabel">
     <label asp-for="SubmitButtonLabel">@T["Submit Button Label"]</label>
     <input asp-for="SubmitButtonLabel" class="form-control content-preview-text content-caption-text" />
     <span asp-validation-for="SubmitButtonLabel"></span>
     <span class="hint">@T["Label for button that triggers search."]</span>
 </fieldset>
 
-<fieldset class="form-group" asp-validation-class-for="EmptyResultsContent">
+<fieldset class="mb-3" asp-validation-class-for="EmptyResultsContent">
     <label asp-for="EmptyResultsContent">@T["Empty Results Content"]</label>
     <input asp-for="EmptyResultsContent" class="form-control content-preview-text content-caption-text" />
     <span asp-validation-for="EmptyResultsContent"></span>

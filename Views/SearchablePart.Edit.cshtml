@@ -2,15 +2,15 @@
 
 @model SearchablePartEditViewModel
 
-<fieldset class="form-group">
-    <div class="custom-control custom-checkbox">
-        <input type="checkbox" class="custom-control-input" asp-for="ExcludeFromResults" checked="@Model.ExcludeFromResults" />
-        <label class="custom-control-label" asp-for="ExcludeFromResults">@T["Exclude from site search"]</label>
+<fieldset class="mb-3">
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" asp-for="ExcludeFromResults" checked="@Model.ExcludeFromResults" />
+        <label class="form-check-label" asp-for="ExcludeFromResults">@T["Exclude from site search"]</label>
         <span class="hint">— @T["Check to exclude this content item from appearing within the site search results."]</span>
     </div>
 </fieldset>
 
-<fieldset class="form-group" asp-validation-class-for="Keywords">
+<fieldset class="mb-3" asp-validation-class-for="Keywords">
     <label asp-for="Keywords">@T["Keywords"]</label>
     <textarea asp-for="Keywords" class="form-control" maxlength="500"></textarea>
     <span asp-validation-for="Keywords"></span>
