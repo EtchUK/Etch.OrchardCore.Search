@@ -7,5 +7,5 @@ using OrchardCore.Modules.Manifest;
     Name = "Site Search",
     Version = "$(VersionNumber)",
     Website = "https://etchuk.com",
-    Dependencies = new[] { "OrchardCore.Autoroute", "OrchardCore.Lucene", "OrchardCore.Queries", "OrchardCore.Title" }
+    Dependencies = new[] { "OrchardCore.Autoroute", "OrchardCore.Search.Lucene", "OrchardCore.Queries", "OrchardCore.Title" }
 )]
