@@ -1,4 +1,4 @@
-﻿using Etch.OrchardCore.Search.Extensions;
+using Etch.OrchardCore.Search.Extensions;
 using Etch.OrchardCore.Search.Models;
 using Etch.OrchardCore.Search.Settings;
 using Etch.OrchardCore.Search.Shapes;
@@ -117,7 +117,11 @@ namespace Etch.OrchardCore.Search.Drivers
 
             if (await updater.TryUpdateModelAsync(model, Prefix))
             {
-                part.ContentTypeSettings = CleanSettings(JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings));
+                if (!string.IsNullOrWhiteSpace(model.ContentTypeSettings))
+                {
+                    part.ContentTypeSettings = CleanSettings(JsonConvert.DeserializeObject<SiteSearchContentTypeSettings[]>(model.ContentTypeSettings));
+                }
+
                 part.DisplayType = model.DisplayType;
                 part.EmptyResultsContent = model.EmptyResultsContent;
                 part.FilterInputPlaceholder = model.FilterInputPlaceholder;
