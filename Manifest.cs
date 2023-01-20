@@ -5,7 +5,7 @@ using OrchardCore.Modules.Manifest;
     Category = "Content",
     Description = "Provides ability to setup site search.",
     Name = "Site Search",
-    Version = "1.2.0",
+    Version = "$(VersionNumber)",
     Website = "https://etchuk.com",
     Dependencies = new[] { "OrchardCore.Autoroute", "OrchardCore.Lucene", "OrchardCore.Queries", "OrchardCore.Title" }
 )]
