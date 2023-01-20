@@ -1,22 +1,13 @@
 {
-  "name": "etch.orchardcore.earch",
-  "version": "1.2.0",
-  "description": "Module for Orchard Core that provides site search.",
+  "private": true,
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "build": "webpack",
     "develop": "webpack --watch",
     "start": "npm install && npm run develop"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/etchuk/Etch.OrchardCore.Search.git"
-  },
-  "author": "Etch Ltd.",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/etchuk/Etch.OrchardCore.Search/issues"
-  },
-  "homepage": "https://github.com/etchuk/Etch.OrchardCore.Search#readme",
   "devDependencies": {
     "@types/bootstrap": "^4.5.0",
     "@types/jquery": "^3.3.38",
