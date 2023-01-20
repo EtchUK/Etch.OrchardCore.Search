@@ -1,16 +1,9 @@
-﻿@using Etch.OrchardCore.Search.Settings
+@using Etch.OrchardCore.Search.Settings
 
 @model Etch.OrchardCore.Search.ViewModels.SiteSearchEditViewModel
 
-<script asp-src="https://vuejs.org/js/vue.min.js" debug-src="https://vuejs.org/js/vue.js" asp-name="vuejs"
-        at="Foot"></script>
-<script asp-src="https://cdn.jsdelivr.net/sortable/1.4.2/Sortable.min.js"
-        debug-src="https://cdn.jsdelivr.net/sortable/1.4.2/Sortable.js" asp-name="sortable" at="Foot"></script>
-<script asp-src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"
-        debug-src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.js" asp-name="vuedraggable"
-        depends-on="vuejs, sortable" at="Foot"></script>
+<script asp-src="~/Etch.OrchardCore.Search/js/admin.js" asp-name="searchAdmin" depends-on="admin, vuejs, sortable, vuedraggable" at="Foot"></script>
 
-<script asp-src="~/Etch.OrchardCore.Search/js/admin.js" asp-name="searchAdmin" depends-on="jquery" at="Foot"></script>
 <script at="Foot">
     initializeContentTypesEditor(document.getElementById('@Html.IdFor(m => m)_ContentTypesEditor'));
 </script>
