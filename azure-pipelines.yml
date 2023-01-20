@@ -22,6 +22,11 @@ stages:
         pool:
           vmImage: "windows-latest"
         steps:
+          - task: UseNode@1
+            inputs:
+              version: "16.x"
+              checkLatest: true
+
           - task: SonarCloudPrepare@1
             displayName: "Prepare SonarCloud Analysis"
             inputs:
@@ -35,6 +40,11 @@ stages:
             displayName: "Get Project Version as variables from Etch.OrchardCore.Search.csproj"
             inputs:
               path: ./Etch.OrchardCore.Search.csproj
+
+          - task: CmdLine@2
+            displayName: 'Compile front-end assets'
+            inputs:
+              script: 'npm run build'
 
           - task: DotNetCoreCLI@2
             displayName: "Build module"
