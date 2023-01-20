@@ -52,6 +52,17 @@ module.exports = [
                 },
             ],
         },
+        resolve: {
+            extensions: ['.tsx', '.ts', '.js'],
+            alias: {
+                vue$: 'vue/dist/vue.esm.js',
+            },
+        },
+        externals: {
+            bootstrap: 'bootstrap',
+            jquery: 'jQuery',
+            vue: 'Vue',
+        },
         plugins: [
             new ESLintPlugin({
                 extensions: ['ts'],
