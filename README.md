@@ -4,7 +4,7 @@ Module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) for adding 
 
 ## Build Status
 
-[![Build Status](https://secure.travis-ci.org/etchuk/Etch.OrchardCore.Search.png?branch=main)](http://travis-ci.org/etchuk/Etch.OrchardCore.Search) [![NuGet](https://img.shields.io/nuget/v/Etch.OrchardCore.Search.svg)](https://www.nuget.org/packages/Etch.OrchardCore.Search)
+[![NuGet](https://img.shields.io/nuget/v/Etch.OrchardCore.Search.svg)](https://www.nuget.org/packages/Etch.OrchardCore.Search)
 
 ## Orchard Core Reference
 
