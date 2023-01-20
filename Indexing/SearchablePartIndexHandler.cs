@@ -8,9 +8,7 @@ namespace Etch.OrchardCore.Search.Indexing
     {
         public override Task BuildIndexAsync(SearchablePart part, BuildPartIndexContext context)
         {
-            var options = context.Settings.ToOptions()
-                | DocumentIndexOptions.Analyze
-                ;
+            var options = context.Settings.ToOptions();
             
             context.DocumentIndex.Set("SearchablePart.Keywords", part.Keywords, options);
 
