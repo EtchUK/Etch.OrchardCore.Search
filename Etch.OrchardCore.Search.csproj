@@ -31,6 +31,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="azure-pipelines.yml" />
+    <EmbeddedResource Remove=".editorconfig" />
+    <EmbeddedResource Remove=".eslintrc.js" />
+    <EmbeddedResource Remove=".gitignore" />
+    <EmbeddedResource Remove="nuget.config" />
+    <EmbeddedResource Remove="package.json" />
+    <EmbeddedResource Remove="package-lock.json" />
+    <EmbeddedResource Remove=".prettierrc" />
+    <EmbeddedResource Remove="README.md" />
+    <EmbeddedResource Remove="tsconfig.json" />
+    <EmbeddedResource Remove="webpack.config.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

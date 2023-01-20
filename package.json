@@ -4,17 +4,29 @@
     "node": ">=16"
   },
   "scripts": {
-    "build": "webpack",
-    "develop": "webpack --watch",
+    "build": "npm install --no-audit && npm run bundle:prod",
+    "bundle:dev": "npm install && webpack --config ./webpack.config.js --mode development",
+    "bundle:prod": "webpack --config ./webpack.config.js --mode production",
+    "bundle:watch": "webpack --config ./webpack.config.js --mode development --watch",
+    "develop": "npm run bundle:watch",
     "start": "npm install && npm run develop"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
     "@types/bootstrap": "^4.5.0",
     "@types/jquery": "^3.3.38",
-    "ts-loader": "^5.4.5",
-    "typescript": "^3.9.5",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
+    "babel-loader": "^9.1.2",
+    "eslint": "^8.32.0",
+    "eslint-webpack-plugin": "^3.2.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
+    "uuid": "^9.0.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-remove-empty-scripts": "^1.0.1"
   },
   "dependencies": {
     "bootstrap": "^4.5.0",
